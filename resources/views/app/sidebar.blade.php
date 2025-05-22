@@ -33,6 +33,12 @@
 							<i class="fas fa-dumbbell nav-icon"></i> <p>Lantai</p>
 						</a>
 					</li>
+
+					<li class="nav-item">
+						<a href="{{ route('room.index') }}" class="nav-link {{ request()->routeIs('room.*') ? 'active' : '' }}">
+							<i class="fas fa-door-closed nav-icon"></i> <p>Kamar</p>
+						</a>
+					</li>
 				@endif
 			</ul>
 		</nav>

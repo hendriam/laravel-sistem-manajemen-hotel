@@ -152,4 +152,19 @@ class FloorController extends Controller
             ], 500);
         }
     }
+
+    public function search(Request $request)
+    {
+        $search = $request->q;
+        return Floor::where('name', 'like', "%{$search}%")
+            ->limit(10)
+            ->get()
+            ->map(function ($floor) {
+                return [
+                    'id' => $floor->id,
+                    'name' => $floor->name,
+                    'text' => $floor->name,
+                ];
+            });
+    }
 }
