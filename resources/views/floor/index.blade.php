@@ -109,9 +109,15 @@
             },
             language: {
                 emptyTable: 'Tidak Ada Data Tersedia',
+                search: "Cari:",
+                lengthMenu: "Tampilkan _MENU_ data",
+                info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+                paginate: {
+                    next: "Selanjutnya",
+                    previous: "Sebelumnya"
+                }
             },
             responsive: true,
-            buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"],
             autoWidth: false,
             ordering: true,
             columns: [
