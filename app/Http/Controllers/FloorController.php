@@ -103,14 +103,14 @@ class FloorController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $publisher = Floor::findOrFail($id);
+        $floor = Floor::findOrFail($id);
 
         $request->validate([
             'name' => 'required|string|max:255|min:3',
             'description' => 'nullable|string',
         ]);
 
-        $publisher->update([
+        $floor->update([
             'name' => $request->name,
             'description' => $request->description,
             'updated_by' => auth()->user()->id,
