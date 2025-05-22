@@ -22,9 +22,18 @@
 			<ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
 				<li class="nav-item">
 					<a href="{{ route('dashboard') }}" class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
-						<i class="nav-icon fas fa-tachometer-alt"></i> <p>Dashboard</p>
+						<i class="nav-icon fas fa-hotel"></i> <p>Dashboard</p>
 					</a>
 				</li>
+
+				@if (auth()->user()->role == "administrator")
+					<li class="nav-header">Master</li>
+					<li class="nav-item">
+						<a href="{{ route('floor.index') }}" class="nav-link {{ request()->routeIs('floor.*') ? 'active' : '' }}">
+							<i class="fas fa-dumbbell nav-icon"></i> <p>Lantai</p>
+						</a>
+					</li>
+				@endif
 			</ul>
 		</nav>
 		<!-- /.sidebar-menu -->
