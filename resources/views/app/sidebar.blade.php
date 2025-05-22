@@ -35,6 +35,12 @@
 					</li>
 
 					<li class="nav-item">
+						<a href="{{ route('room-types.index') }}" class="nav-link {{ request()->routeIs('room-types.*') ? 'active' : '' }}">
+							<i class="fas fa-door-closed nav-icon"></i> <p>Tipe Kamar</p>
+						</a>
+					</li>
+
+					<li class="nav-item">
 						<a href="{{ route('room.index') }}" class="nav-link {{ request()->routeIs('room.*') ? 'active' : '' }}">
 							<i class="fas fa-door-closed nav-icon"></i> <p>Kamar</p>
 						</a>
