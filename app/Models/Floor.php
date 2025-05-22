@@ -11,6 +11,16 @@ class Floor extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name'
+        'name', 'description', 'created_by', 'updated_by'
     ];
+
+    public function createdBy()
+    { 
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function updatedBy()
+    { 
+        return $this->belongsTo(User::class, 'updated_by');
+    }
 }

@@ -64,6 +64,8 @@
                                         <tr>
                                             <th>No.</th>
                                             <th>Nama</th>
+                                            <th>Keterangan</th>
+                                            <th>Diinput oleh</th>
                                             <th>Tgl.Input</th>
                                             <th style="width: 200px; text-align:center;">#</th>
                                         </tr>
@@ -125,6 +127,14 @@
                     orderable: true,
                 },
                 {
+                    data: 'description',
+                    orderable: false,
+                },
+                {
+                    data: 'created_by.name',
+                    orderable: false,
+                },
+                {
                     data: 'created_at',
                     render: function (data, type, row) {
                         return moment(data).format('YYYY-MM-DD HH:mm:ss'); 
@@ -140,9 +150,9 @@
                     orderable: false,
                 }
             ],
-            order: [ 2, 'desc' ],
+            order: [ 4, 'desc' ],
             columnDefs: [
-                {targets: [3], className: 'dt-center'}
+                {targets: [5], className: 'dt-center'}
             ],
         });
 

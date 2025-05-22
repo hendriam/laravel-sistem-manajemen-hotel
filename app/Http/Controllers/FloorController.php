@@ -19,6 +19,8 @@ class FloorController extends Controller
             $columns = [
                 'id',
                 'name',
+                'description',
+                'created_by',
                 'created_at' 
             ];
             $totalData = Floor::count();
@@ -29,7 +31,7 @@ class FloorController extends Controller
             $order = $columns[$request->input('order.0.column')];
             $dir = $request->input('order.0.dir');
 
-            $query = Floor::query();
+            $query = Floor::with(['createdBy', 'updatedby']);
 
             // Search filter
             if (!empty($request->input('search.value'))) {
@@ -74,10 +76,13 @@ class FloorController extends Controller
         // Validasi
         $request->validate([
             'name' => 'required|string|max:255|min:3',
+            'description' => 'nullable|string',
         ]);
 
         Floor::create([
             'name' => $request->name,
+            'description' => $request->description,
+            'created_by' => auth()->user()->id,
         ]);
 
         return redirect()->route('floor.create')->with('success', 'Data berhasil ditambahkan');
@@ -102,10 +107,13 @@ class FloorController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255|min:3',
+            'description' => 'nullable|string',
         ]);
 
         $publisher->update([
             'name' => $request->name,
+            'description' => $request->description,
+            'updated_by' => auth()->user()->id,
         ]);
 
         return redirect()->route('floor.edit', $id)->with('success', 'Data berhasil diperbarui');

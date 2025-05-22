@@ -52,6 +52,16 @@
                                                     </div>
                                                 @enderror
                                             </div>
+
+                                            <div class="mb-2">
+                                                <label for="description" class="form-label">Keterangan</label>
+                                                <textarea name="description" class="form-control @error('description') is-invalid @enderror" rows="3" placeholder="Contoh: Lantai 1 sedang diperbaiki">{{ old('description') }}</textarea>
+                                                @error('description')
+                                                    <div class="invalid-feedback">
+                                                        {{ $message }}
+                                                    </div>
+                                                @enderror
+                                            </div>
                                         </div>
                                    </div>
                                 </div>
