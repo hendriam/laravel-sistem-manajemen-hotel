@@ -61,7 +61,7 @@
                                         <div class="col-md-6">
                                             <div class="mb-2">
                                                 <label for="status" class="form-label">Status</label>
-                                                <select class="form-select" name="status" id="status">
+                                                <select class="form-control" name="status" id="status">
                                                     <option value="">-- Select status --</option>
                                                     <option value="available">Tersedia</option>
                                                     <option value="occupied">Terisi</option>
