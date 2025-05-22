@@ -13,11 +13,12 @@ return new class extends Migration
     {
         Schema::create('rooms', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
-            $table->decimal('price', 9, 0)->default(0);
+            $table->string('room_number')->unique();
+            $table->foreignId('room_type_id')->constrained('room_types')->onDelete('restrict');
             $table->foreignId('floor_id')->constrained('floors')->onDelete('restrict');
-            $table->string('description')->nullable();
-            $table->enum('status', ['available', 'occupied', 'closed'])->default('available');
+            $table->decimal('price', 9, 0)->default(0);
+            $table->enum('status', ['available', 'booked', 'occupied', 'cleaning'])->default('available');
+            $table->text('description')->nullable();
             $table->foreignId('created_by')->constrained('users')->onDelete('restrict');
             $table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();

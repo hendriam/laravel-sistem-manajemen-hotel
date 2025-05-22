@@ -11,8 +11,13 @@ class Room extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'price', 'floor_id', 'description', 'status', 'created_by', 'updated_by',
+        'room_number', 'room_type_id', 'floor_id', 'price', 'description', 'status', 'created_by', 'updated_by',
     ];
+
+    public function roomType()
+    {
+        return $this->belongsTo(RoomType::class);
+    }
 
     public function floor()
     {
