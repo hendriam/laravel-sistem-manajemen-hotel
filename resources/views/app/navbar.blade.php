@@ -5,6 +5,9 @@
 		<li class="nav-item">
 			<a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
 		</li>
+		<li class="nav-item">
+			<marquee class="nav-link">Sistem Manajemen Hotel Sandika Jl. Bandung No. 40</marquee>
+		</li>
 	</ul>
 
 	<!-- Right navbar links -->
@@ -20,7 +23,7 @@
 					<i class="fas fa-user mr-2"></i> Profil
 				</a>
 				<div class="dropdown-divider"></div>
-				<form action="#" method="post">
+				<form action="{{ route('logout') }}" method="post">
 					@csrf
 					<button type="submit" class="btn btn-link dropdown-item" style="color: black;" ><i class="fas fa-sign-out-alt mr-2"></i> Logout</button> 
 				</form>
@@ -31,11 +34,11 @@
 			<i class="fas fa-expand-arrows-alt"></i>
 			</a>
 		</li>
-		<li class="nav-item">
+		<!-- <li class="nav-item">
 			<a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
 			<i class="fas fa-th-large"></i>
 			</a>
-		</li>
+		</li> -->
 	</ul>
 </nav>
 <!-- /.navbar -->
