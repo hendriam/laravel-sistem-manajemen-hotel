@@ -49,13 +49,13 @@
 					<li class="nav-header">Transaksi</li>
 					<li class="nav-item">
 						<a href="{{ route('guest.index') }}" class="nav-link {{ request()->routeIs('guest.*') ? 'active' : '' }}">
-							<i class="fas fa-user nav-icon"></i> <p>Buku Tamu</p>
+							<i class="fas fa-address-card nav-icon"></i> <p>Buku Tamu</p>
 						</a>
 					</li>
 
 					<li class="nav-item">
-						<a href="{{ route('reservation.index') }}" class="nav-link {{ request()->routeIs('reservation.index.*') ? 'active' : '' }}">
-							<i class="fas fa-sticky-note"></i> <p>Reservasi</p>
+						<a href="{{ route('reservation.index') }}" class="nav-link {{ request()->routeIs('reservation.*') ? 'active' : '' }}">
+							<i class="fas fa-book nav-icon"></i> <p>Reservasi</p>
 						</a>
 					</li>
 				@endif
