@@ -7,6 +7,7 @@ use App\Http\Controllers\FloorController;
 use App\Http\Controllers\RoomTypeController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\GuestController;
+use App\Http\Controllers\ReservationController;
 
 Route::get('/', [AuthController::class, 'login'])->name('login');
 Route::post('/', [AuthController::class, 'authenticate']);
@@ -40,6 +41,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('kamar/edit/{id}', [RoomController::class, 'edit'])->name('room.edit');
     Route::put('kamar/{id}', [RoomController::class, 'update'])->name('room.update');
     Route::delete('kamar/{id}', [RoomController::class, 'destroy'])->name('room.destroy');
+    Route::get('kamar/search', [RoomController::class, 'search'])->name('room.search');
 
     // Master buku tamu
     Route::match(['get', 'post'], 'tamu', [GuestController::class, 'index'])->name('guest.index');
@@ -47,5 +49,12 @@ Route::middleware(['auth'])->group(function () {
     Route::post('tamu/store', [GuestController::class, 'store'])->name('guest.store');
     Route::get('tamu/edit/{id}', [GuestController::class, 'edit'])->name('guest.edit');
     Route::put('tamu/{id}', [GuestController::class, 'update'])->name('guest.update');
+    Route::get('tamu/search', [GuestController::class, 'search'])->name('guest.search');
 
+    // Reservasi
+    Route::match(['get', 'post'], 'reservasi', [ReservationController::class, 'index'])->name('reservation.index');
+    Route::get('reservasi/tambah', [ReservationController::class, 'create'])->name('reservation.create');
+    Route::post('reservasi/store', [ReservationController::class, 'store'])->name('reservation.store');
+    Route::get('reservasi/edit/{id}', [ReservationController::class, 'edit'])->name('reservation.edit');
+    Route::put('reservasi/{id}', [ReservationController::class, 'update'])->name('reservation.update');
 });

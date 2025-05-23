@@ -2,35 +2,32 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Guest;
 use Illuminate\Http\Request;
-use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use App\Models\Reservation;
 use App\Models\Room;
-use App\Models\Floor;
-use App\Models\RoomType;
 
-class RoomController extends Controller
+class ReservationController extends Controller
 {
-    protected string $title = "Kamar";
+    protected string $title = "Reservasi";
 
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
         if ($request->ajax()) {
             $columns = [
                 'id',
-                'room_number',
-                'room_type.name',
-                'floor.name',
-                'price',
-                'description',
+                'guest.name',
+                'room.name',
+                'check_in_date',
+                'check_out_date',
                 'status',
-                'created_by',
+                'notes',
+                'created_by.name',
                 'created_at' 
             ];
-            $totalData = Room::count();
+            $totalData = Reservation::count();
 
             $limit = $request->input('length');   // jumlah data per halaman
             $start = $request->input('start');    // offset
@@ -38,7 +35,7 @@ class RoomController extends Controller
             $order = $columns[$request->input('order.0.column')];
             $dir = $request->input('order.0.dir');
 
-            $query = Room::with(['roomType', 'floor','createdBy', 'updatedby']);
+            $query = Reservation::with(['guest', 'room', 'createdBy', 'updatedby']);
 
             // Search filter
             if (!empty($request->input('search.value'))) {
@@ -64,7 +61,7 @@ class RoomController extends Controller
             ]);
         }
 
-        return view('room.index', ['title' => $this->title]);
+        return view('reservation.index', ['title' => $this->title]);
     }
 
     /**
@@ -72,7 +69,7 @@ class RoomController extends Controller
      */
     public function create()
     {
-        return view('room.create', [
+        return view('reservation.create', [
             'title' => $this->title,
         ]);
     }
@@ -82,24 +79,24 @@ class RoomController extends Controller
      */
     public function store(Request $request)
     {
-        // Validasi
         $request->validate([
-            'room_number' => 'required|min:3|unique:rooms',
-            'room_type_id' => 'required|exists:room_types,id',
-            'floor_id' => 'required',
-            'price' => 'required|numeric|min:3',
-            'description' => 'nullable|string',
-            'status' => 'required|in:available,booked,occupied,cleaning',
+            'guest_id' => 'required|exists:guests,id',
+            'room_id' => 'required|exists:rooms,id',
+            'check_in_date' => 'required|date',
+            'check_out_date' => 'required|date|after:check_in_date',
+            'notes' => 'nullable|string',
         ]);
 
         try {
-            Room::create($request->all() + ['created_by' => Auth::id()]);
+            Reservation::create($request->all() + ['status' => 'booked', 'created_by' => Auth::id()]);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Data berhasil disimpan.',
-                'redirect' => route('room.index')
+                'redirect' => route('reservation.create')
             ], 201);
+        } catch (HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return response()->json([
                 'success' => false,
@@ -109,15 +106,23 @@ class RoomController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
      * Show the form for editing the specified resource.
      */
     public function edit(string $id)
     {
-        $data = Room::findOrFail($id);
-        return view('room.edit', compact('data'), [
+        $data = Reservation::findOrFail($id);
+        return view('reservation.edit', compact('data'), [
             'title' => $this->title,
-            'roomTypes' => RoomType::all(),
-            'floors' => Floor::all(),
+            'guests' => Guest::all(),
+            'rooms' => Room::where('status', 'available')->get(),
         ]);
     }
 
@@ -126,31 +131,30 @@ class RoomController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        // Validasi
         $request->validate([
-            'room_number' => 'required|min:3|unique:rooms,room_number,'.$id,
-            'room_type_id' => 'required|exists:room_types,id',
-            'floor_id' => 'required|exists:floors,id',
-            'price' => 'required|numeric|min:3',
-            'description' => 'nullable|string',
-            'status' => 'required|in:available,booked,occupied,cleaning',
+            'guest_id' => 'required|exists:guests,id',
+            'room_id' => 'required|exists:rooms,id',
+            'check_in_date' => 'required|date',
+            'check_out_date' => 'required|date|after:check_in_date',
+            'notes' => 'nullable|string',
+            'status' => 'required|in:booked,checked_in,cancelled,completed',
         ]);
 
         try {
-            $room = Room::findOrFail($id);
-            if (!$room) {
+            $reservation = Reservation::findOrFail($id);
+            if (!$reservation) {
                 throw new HttpResponseException(response()->json([
                     'success' => false,
                     'message' => "Data tidak ditemukan.",
                 ], 404));
             }
 
-            $room->update($request->all() + ['updated_by' => Auth::id()]);
+            $reservation->update($request->all() + ['updated_by' => Auth::id()]);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Data berhasil diubah.',
-                'redirect' => route('room.index')
+                'redirect' => route('reservation.index')
             ], 200);
         } catch (HttpResponseException $e) {
             throw $e;
@@ -168,23 +172,5 @@ class RoomController extends Controller
     public function destroy(string $id)
     {
         //
-    }
-
-    public function search(Request $request)
-    {
-        $query = Room::with(['roomType', 'floor']);
-        $query->where('status', 'available');
-        
-        $search = $request->q;
-        return $query->where('room_number', 'like', "%{$search}%")
-            ->limit(10)
-            ->get()
-            ->map(function ($room) {
-                return [
-                    'id' => $room->id,
-                    'name' => $room->room_number,
-                    'text' => 'Kamar '. $room->room_number. ' ( ' . $room->roomType->name . ' - ' . $room->floor->name . ' )',
-                ];
-            });
     }
 }

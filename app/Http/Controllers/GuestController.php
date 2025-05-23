@@ -171,4 +171,19 @@ class GuestController extends Controller
     {
         //
     }
+
+    public function search(Request $request)
+    {
+        $search = $request->q;
+        return Guest::where('name', 'like', "%{$search}%")
+            ->limit(10)
+            ->get()
+            ->map(function ($guest) {
+                return [
+                    'id' => $guest->id,
+                    'name' => $guest->name,
+                    'text' => $guest->name,
+                ];
+            });
+    }
 }
