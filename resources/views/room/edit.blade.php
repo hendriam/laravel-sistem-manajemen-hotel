@@ -42,45 +42,7 @@
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="mb-2">
-                                                <label for="name" class="form-label">Nama Kamar</label>
-                                                <input type="text" name="name" id="name" class="form-control" value="{{ $data->name }}" placeholder="Contoh: Kamar 1">
-                                            </div>
-
-                                            <div class="mb-2">
-                                                <label for="price" class="form-label">Harga</label>
-                                                <input type="decimal" name="price" id="price" class="form-control" value="{{ $data->price }}" placeholder="Contoh: 150000">
-                                            </div>
-
-                                            <div class="mb-2">
-                                                <label for="floor_id" class="form-label">Lantai</label>
-                                                <select class="form-control select2bs4" name="floor_id" id="floor_id">
-                                                    @foreach ($floors as $floor)
-                                                        <option value="{{ $floor->id }}" {{ $data->floor_id == $floor->id ? 'selected' : '' }}>{{ $floor->name }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <div class="mb-2">
-                                                <label for="status" class="form-label">Status</label>
-                                                <select class="form-control" name="status" id="status">
-                                                    <option value="">-- Select status --</option>
-                                                    <option value="available" {{ $data->status == 'available' ? 'selected' : '' }}>Tersedia</option>
-                                                    <option value="occupied" {{ $data->status == 'occupied' ? 'selected' : '' }}>Terisi</option>
-                                                    <option value="closed" {{ $data->status == 'closed' ? 'selected' : '' }}>Tutup</option>
-                                                </select>
-                                            </div>
-
-                                            <div class="mb-2">
-                                                <label for="description" class="form-label">Keterangan</label>
-                                                <textarea name="description" id="description" class="form-control" rows="3" placeholder="Contoh: Kamar 1 sedang diperbaiki">{{ $data->description }}</textarea>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    @include('room.form', ['data' => $data, 'roomTypes' => $roomTypes, 'floors' => $floors])
                                 </div>
                                 <div class="card-footer">
                                     <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> <i class='fas fa-spinner fa-spin' style="display: none"></i> Simpan</button>
@@ -101,6 +63,35 @@
     <script src="{{ asset('assets/plugins/select2/js/select2.full.min.js')}}"></script>
     <script src="{{ asset('assets/plugins/sweetalert2/sweetalert2.min.js')}}"></script>
     <script>
+        //Initialize Select2 Elements
+        $('.select2bs44').select2({
+            theme: 'bootstrap4',
+            placeholder: "-- Pilih tipe kamar --",
+            minimumInputLength: 2,
+            ajax: {
+                url: '{{ route("room-types.search") }}',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        q: params.term
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.map(function (item) {
+                            return {
+                                id: item.id,
+                                text: item.name,
+                                name: item.name,
+                            };
+                        })
+                    };
+                },
+                cache: true
+            }
+        })
+
         //Initialize Select2 Elements
         $('.select2bs4').select2({
             theme: 'bootstrap4',
@@ -161,17 +152,22 @@
                     if (xhr.status === 422) {
                         const errors = xhr.responseJSON.errors;
 
-                        if (errors.name) {
-                            $('#name').addClass('is-invalid').after(`<div class="invalid-feedback">${errors.name}</div>`);
+                        if (errors.room_number) {
+                            $('#room_number').addClass('is-invalid').after(`<div class="invalid-feedback">${errors.room_number}</div>`);
                         }
 
-                        if (errors.price) {
-                            $('#price').addClass('is-invalid').after(`<div class="invalid-feedback">${errors.price}</div>`);
+                        if (errors.room_type_id) {
+                            $('#room_type_id').addClass('is-invalid');
+                            $('#roomType .select2-container').after(`<div class="invalid-feedback">${errors.room_type_id}</div>`);
                         }
 
                         if (errors.floor_id) {
                             $('#floor_id').addClass('is-invalid');
-                            $('.select2bs4 .select2-container').after(`<div class="invalid-feedback">${errors.floor_id}</div>`);
+                            $('#floor .select2-container').after(`<div class="invalid-feedback">${errors.floor_id}</div>`);
+                        }
+
+                        if (errors.price) {
+                            $('#price').addClass('is-invalid').after(`<div class="invalid-feedback">${errors.price}</div>`);
                         }
 
                         if (errors.status) {

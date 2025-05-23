@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use App\Models\Room;
 use App\Models\Floor;
+use App\Models\RoomType;
 
 class RoomController extends Controller
 {
@@ -19,9 +20,10 @@ class RoomController extends Controller
         if ($request->ajax()) {
             $columns = [
                 'id',
-                'name',
+                'room_number',
+                'room_type.name',
+                'floor.name',
                 'price',
-                'floor_id',
                 'description',
                 'status',
                 'created_by',
@@ -35,7 +37,7 @@ class RoomController extends Controller
             $order = $columns[$request->input('order.0.column')];
             $dir = $request->input('order.0.dir');
 
-            $query = Room::with(['floor','createdBy', 'updatedby']);
+            $query = Room::with(['roomType', 'floor','createdBy', 'updatedby']);
 
             // Search filter
             if (!empty($request->input('search.value'))) {
@@ -81,18 +83,20 @@ class RoomController extends Controller
     {
         // Validasi
         $request->validate([
-            'name' => 'required|string|unique:rooms|max:255|min:3',
-            'price' => 'required|min:3',
+            'room_number' => 'required|min:3|unique:rooms',
+            'room_type_id' => 'required|exists:room_types,id',
             'floor_id' => 'required',
+            'price' => 'required|numeric|min:3',
             'description' => 'nullable|string',
-            'status' => 'required',
+            'status' => 'required|in:available,booked,occupied,cleaning',
         ]);
 
         try {
             Room::create([
-                'name' => $request->name,
-                'price' => $request->price,
+                'room_number' => $request->room_number,
+                'room_type_id' => $request->room_type_id,
                 'floor_id' => $request->floor_id,
+                'price' => $request->price,
                 'description' => $request->description,
                 'status' => $request->status,
                 'created_by' => auth()->user()->id,
@@ -119,6 +123,7 @@ class RoomController extends Controller
         $data = Room::findOrFail($id);
         return view('room.edit', compact('data'), [
             'title' => $this->title,
+            'roomTypes' => RoomType::all(),
             'floors' => Floor::all(),
         ]);
     }
@@ -130,11 +135,12 @@ class RoomController extends Controller
     {
         // Validasi
         $request->validate([
-            'name' => 'required|string|max:255|min:3',
-            'price' => 'required|min:3',
-            'floor_id' => 'required',
+            'room_number' => 'required|min:3|unique:rooms,room_number,'.$id,
+            'room_type_id' => 'required|exists:room_types,id',
+            'floor_id' => 'required|exists:floors,id',
+            'price' => 'required|numeric|min:3',
             'description' => 'nullable|string',
-            'status' => 'required',
+            'status' => 'required|in:available,booked,occupied,cleaning',
         ]);
 
         try {
@@ -147,9 +153,10 @@ class RoomController extends Controller
             }
 
             $room->update([
-                'name' => $request->name,
-                'price' => $request->price,
+                'room_number' => $request->room_number,
+                'room_type_id' => $request->room_type_id,
                 'floor_id' => $request->floor_id,
+                'price' => $request->price,
                 'description' => $request->description,
                 'status' => $request->status,
                 'updated_by' => auth()->user()->id,

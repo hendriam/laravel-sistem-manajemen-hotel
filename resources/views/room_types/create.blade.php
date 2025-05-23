@@ -35,7 +35,7 @@
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    @include('room_types.form', ['roomType' => null])
+                                    @include('room_types.form', ['data' => null])
                                 </div>
                                 <div class="card-footer">
                                     <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Simpan</button>

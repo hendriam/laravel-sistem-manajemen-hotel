@@ -63,9 +63,10 @@
                                     <thead>
                                         <tr>
                                             <th>No.</th>
-                                            <th>Nama</th>
-                                            <th>Harga</th>
+                                            <th>Nomor Kamar</th>
+                                            <th>Tipe Kamar</th>
                                             <th>Lantai</th>
+                                            <th>Harga Permalam</th>
                                             <th>Keterangan</th>
                                             <th>Status</th>
                                             <th>Diinput oleh</th>
@@ -132,11 +133,11 @@
                     orderable: false,
                 },
                 {
-                    data: 'name',
+                    data: 'room_number',
                     orderable: true,
                 },
                 {
-                    data: 'price',
+                    data: 'room_type.name',
                     orderable: false,
                 },
                 {
@@ -144,24 +145,33 @@
                     orderable: false,
                 },
                 {
+                    data: 'price',
+                    orderable: false,
+                },
+                {
                     data: 'description',
                     orderable: false,
                 },
                 {
-                        data: 'status',
-                        render: function (data, type, row) {
-                            if (data === "available") {
+                    data: 'status',
+                    render: function (data, type, row) {
+                        switch (data) {
+                            case "available" :
                                 return '<span class="badge badge-success">Tersedia</span>';
-                            } else if (data == "occupied") {
+                                break;
+                            case "booked":
+                                return '<span class="badge badge-warning">Dibooking</span>';
+                                break;
+                            case "occupied":
                                 return '<span class="badge badge-info">Terisi</span>';
-                            } else if (data == "closed") {
-                                return '<span class="badge badge-danger">Tutup</span>';
-                            } else {
-                                return '<span class="badge badge-secondary">Tidak ada</span>';
-                            }
-                        },
-                        orderable: false,
+                                break;
+                            case "cleaning":
+                                return '<span class="badge badge-danger">Dibersihkan</span>';
+                                break;
+                        }
                     },
+                    orderable: false,
+                },
                 {
                     data: 'created_by.name',
                     orderable: false,
@@ -182,9 +192,9 @@
                     orderable: false,
                 }
             ],
-            order: [ 7, 'desc' ],
+            order: [ 8, 'desc' ],
             columnDefs: [
-                {targets: [8], className: 'dt-center'}
+                {targets: [9], className: 'dt-center'}
             ],
         });
 
