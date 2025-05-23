@@ -42,13 +42,14 @@
 
 					<li class="nav-item">
 						<a href="{{ route('room.index') }}" class="nav-link {{ request()->routeIs('room.*') ? 'active' : '' }}">
-							<i class="fas fa-door-closed nav-icon"></i> <p>Kamar</p>
+							<i class="fas fa-bed nav-icon"></i> <p>Kamar</p>
 						</a>
 					</li>
 
+					<li class="nav-header">Transaksi</li>
 					<li class="nav-item">
 						<a href="{{ route('guest.index') }}" class="nav-link {{ request()->routeIs('guest.*') ? 'active' : '' }}">
-							<i class="fas fa-users nav-icon"></i> <p>Tamu</p>
+							<i class="fas fa-users nav-icon"></i> <p>Buku Tamu</p>
 						</a>
 					</li>
 				@endif
