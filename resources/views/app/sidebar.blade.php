@@ -45,6 +45,12 @@
 							<i class="fas fa-door-closed nav-icon"></i> <p>Kamar</p>
 						</a>
 					</li>
+
+					<li class="nav-item">
+						<a href="{{ route('guest.index') }}" class="nav-link {{ request()->routeIs('guest.*') ? 'active' : '' }}">
+							<i class="fas fa-users nav-icon"></i> <p>Tamu</p>
+						</a>
+					</li>
 				@endif
 			</ul>
 		</nav>
