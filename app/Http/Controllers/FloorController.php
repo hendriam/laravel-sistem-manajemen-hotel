@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Floor;
 
 class FloorController extends Controller
@@ -79,11 +79,7 @@ class FloorController extends Controller
             'description' => 'nullable|string',
         ]);
 
-        Floor::create([
-            'name' => $request->name,
-            'description' => $request->description,
-            'created_by' => auth()->user()->id,
-        ]);
+        Floor::create($request->all() + ['created_by' => Auth::id()]);
 
         return redirect()->route('floor.create')->with('success', 'Data berhasil ditambahkan');
     }
@@ -110,11 +106,7 @@ class FloorController extends Controller
             'description' => 'nullable|string',
         ]);
 
-        $floor->update([
-            'name' => $request->name,
-            'description' => $request->description,
-            'updated_by' => auth()->user()->id,
-        ]);
+        $floor->update($request->all() + ['updated_by' => Auth::id()]);
 
         return redirect()->route('floor.edit', $id)->with('success', 'Data berhasil diperbarui');
     }

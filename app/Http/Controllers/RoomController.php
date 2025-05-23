@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Room;
 use App\Models\Floor;
 use App\Models\RoomType;
@@ -92,15 +93,7 @@ class RoomController extends Controller
         ]);
 
         try {
-            Room::create([
-                'room_number' => $request->room_number,
-                'room_type_id' => $request->room_type_id,
-                'floor_id' => $request->floor_id,
-                'price' => $request->price,
-                'description' => $request->description,
-                'status' => $request->status,
-                'created_by' => auth()->user()->id,
-            ]);
+            Room::create($request->all() + ['created_by' => Auth::id()]);
 
             return response()->json([
                 'success' => true,
@@ -152,15 +145,7 @@ class RoomController extends Controller
                 ], 404));
             }
 
-            $room->update([
-                'room_number' => $request->room_number,
-                'room_type_id' => $request->room_type_id,
-                'floor_id' => $request->floor_id,
-                'price' => $request->price,
-                'description' => $request->description,
-                'status' => $request->status,
-                'updated_by' => auth()->user()->id,
-            ]);
+            $room->update($request->all() + ['updated_by' => Auth::id()]);
 
             return response()->json([
                 'success' => true,

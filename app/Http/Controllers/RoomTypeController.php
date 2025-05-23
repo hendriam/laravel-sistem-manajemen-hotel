@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\RoomType;
 
 class RoomTypeController extends Controller
@@ -79,15 +80,10 @@ class RoomTypeController extends Controller
             'name' => 'required|string|max:255|min:3',
             'description' => 'nullable|string',
         ]);
-
-        RoomType::create([
-            'name' => $request->name,
-            'description' => $request->description,
-            'created_by' => auth()->user()->id,
-        ]);
+        
+        RoomType::create($request->all() + ['created_by' => Auth::id()]);
 
         return redirect()->route('room-types.create')->with('success', 'Data berhasil ditambahkan');
-
     }
 
     /**
@@ -119,14 +115,9 @@ class RoomTypeController extends Controller
             'description' => 'nullable|string',
         ]);
 
-        $roomType->update([
-            'name' => $request->name,
-            'description' => $request->description,
-            'updated_by' => auth()->user()->id,
-        ]);
+        $roomType->update($request->all() + ['updated_by' => Auth::id()]);
 
         return redirect()->route('room-types.edit', $id)->with('success', 'Data berhasil diperbarui');
-
     }
 
     /**
