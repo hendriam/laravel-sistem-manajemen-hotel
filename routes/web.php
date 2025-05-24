@@ -10,7 +10,7 @@ use App\Http\Controllers\GuestController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\UserController;
-
+use App\Http\Controllers\ProfileController;
 
 Route::get('/', [AuthController::class, 'login'])->name('login');
 Route::post('/', [AuthController::class, 'authenticate']);
@@ -18,6 +18,11 @@ Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    // Profile
+    Route::get('profile', [ProfileController::class, 'index'])->name('profile');
+    Route::put('profile/ganti-password/{id}', [ProfileController::class, 'changePassword'])->name('profile.ganti-password');
+    Route::put('profile/update-profile/{id}', [ProfileController::class, 'updateProfile'])->name('profile.update-profile');
 
     // User
     Route::match(['get', 'post'], 'user', [UserController::class, 'index'])->name('user.index');
