@@ -44,7 +44,7 @@
                             <div class="card-header">
                                 <h5 class="card-title">Daftar {{ $title }}</h5>
                                 <div class="card-tools">
-                                    <a href="{{ route('reservation.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Tambah Reservasi</a>
+                                    <a href="{{ route('reservation.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Buat Reservasi</a>
                                     <a href="{{ route('reservation.direct.create') }}" class="btn btn-warning"><i class="fas fa-plus"></i> Check-in Lansung</a>
                                 </div>
                                 <!-- /.card-tools -->
