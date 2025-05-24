@@ -72,7 +72,7 @@
                                             <th>Keterangan</th>
                                             <th>Diinput oleh</th>
                                             <th>Tgl.Input</th>
-                                            <th style="width: 200px; text-align:center;">#</th>
+                                            <th style="width: 300px; text-align:center;">#</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -154,7 +154,7 @@
                     render: function (data, type, row) {
                         switch (data) {
                             case "booked" :
-                                return '<span class="badge badge-warning">Dibooking</span>';
+                                return '<span class="badge badge-warning">Booking</span>';
                                 break;
                             case "checked_in":
                                 return '<span class="badge badge-success">Check in</span>';
@@ -163,7 +163,7 @@
                                 return '<span class="badge badge-danger">Batal</span>';
                                 break;
                             case "completed":
-                                return '<span class="badge badge-success">Check out</span>';
+                                return '<span class="badge badge-info">Check out</span>';
                                 break;
                         }
                     },
@@ -191,14 +191,16 @@
                             case 'booked':
                                 return  '<a href="{{ route("reservation.index") }}/edit/'+data.id+'" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i> Edit</a> &nbsp'+
                                 '<button type="button" class="btn btn-sm btn-success btn-checkin" data-id="'+data.id+'"><i class="fas fa-check"></i> Check-in</button> &nbsp' +
+                                '<a href="{{ route("reservation.index") }}/show/'+data.id+'" class="btn btn-sm btn-info"><i class="fas fa-eye"></i> Detail</a> &nbsp'+
                                 '<button type="button" class="btn btn-sm btn-danger btn-cancel" data-id="'+data.id+'"><i class="fas fa-window-close"></i> Batal</button> &nbsp';
                                 break;
                             case 'checked_in':
                                 return  '<a href="{{ route("reservation.index") }}/edit/'+data.id+'" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i> Edit</a> &nbsp'+
-                                '<button type="button" class="btn btn-sm btn-success btn-checkout" data-id="'+data.id+'"><i class="fas fa-check"></i> Check-out</button> &nbsp';
+                                '<button type="button" class="btn btn-sm btn-success btn-dark" data-id="'+data.id+'"><i class="fas fa-check"></i> Check-out</button> &nbsp'+
+                                '<a href="{{ route("reservation.index") }}/show/'+data.id+'" class="btn btn-sm btn-info"><i class="fas fa-eye"></i> Detail</a> &nbsp';
                                 break;
                             default:
-                                return '-';
+                                return 'Selesai';
                             break;
                         }
                     },

@@ -8,6 +8,7 @@ use App\Http\Controllers\RoomTypeController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\GuestController;
 use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\PaymentController;
 
 Route::get('/', [AuthController::class, 'login'])->name('login');
 Route::post('/', [AuthController::class, 'authenticate']);
@@ -56,10 +57,16 @@ Route::middleware(['auth'])->group(function () {
     Route::get('reservasi/tambah', [ReservationController::class, 'create'])->name('reservation.create');
     Route::post('reservasi/store', [ReservationController::class, 'store'])->name('reservation.store');
     Route::get('reservasi/edit/{id}', [ReservationController::class, 'edit'])->name('reservation.edit');
+    Route::get('reservasi/show/{id}', [ReservationController::class, 'show'])->name('reservation.show');
     Route::put('reservasi/{id}', [ReservationController::class, 'update'])->name('reservation.update');
     Route::put('reservasi/check-in/{id}', [ReservationController::class, 'checkIn'])->name('reservation.checkIn');
     Route::put('reservasi/check-out/{id}', [ReservationController::class, 'checkOut'])->name('reservation.checkOut');
     Route::put('reservasi/cancel/{id}', [ReservationController::class, 'cancel'])->name('reservation.cancel');
     Route::get('reservasi/checkin-langsung', [ReservationController::class, 'createDirectCheckin'])->name('reservation.direct.create');
     Route::post('reservasi/checkin-langsung', [ReservationController::class, 'storeDirectCheckin'])->name('reservation.direct.store');
+    
+    // Pembayaran
+    Route::get('reservasi/pembayaran/tambah/{reservation_id}', [PaymentController::class, 'create'])->name('reservation.payment.create');
+    Route::post('reservasi/pembayaran/store/{reservation_id}', [PaymentController::class, 'store'])->name('reservation.payment.store');
+
 });

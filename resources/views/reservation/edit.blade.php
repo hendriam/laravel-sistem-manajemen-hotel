@@ -44,7 +44,7 @@
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    @include('reservation.form', ['data' => $data, 'guests' => $guests, 'rooms' => $rooms])
+                                    @include('reservation.form', ['data' => $data, 'guests' => $guests, 'rooms' => $rooms, 'isCreate' => false])
                                 </div>
                                 <div class="card-footer">
                                     <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> <i class='fas fa-spinner fa-spin' style="display: none"></i> Simpan</button>

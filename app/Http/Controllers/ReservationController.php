@@ -6,6 +6,8 @@ use App\Models\Guest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Support\Facades\DB;
+use App\Models\Payment;
 use App\Models\Reservation;
 use App\Models\Room;
 
@@ -79,10 +81,48 @@ class ReservationController extends Controller
             'check_in_date' => 'required|date',
             'check_out_date' => 'required|date|after:check_in_date',
             'notes' => 'nullable|string',
+            'down_payment' => 'required|numeric|min:5',
+            'down_payment_method' => 'required|string',
+            'notes_down_payment' => 'nullable|string',
         ]);
 
+        
+        // Cek apakah tamu sudah punya reservasi aktif
+        $existing = Reservation::where('guest_id', $request->guest_id)
+            ->whereIn('status', ['booked', 'checked_in'])
+            ->first();
+        
+        if ($existing) {
+            throw new HttpResponseException(response()->json([
+                'success' => false,
+                'message' => 'Tamu sudah booking atau check-in! Silakan selesaikan pembayaran atau batalkan reservasi sebelumnya.',
+            ], 400));
+        }
+
+        DB::beginTransaction();
+
         try {
-            Reservation::create($request->all() + ['status' => 'booked', 'created_by' => Auth::id()]);
+            $reservation = Reservation::create($request->all() + ['status' => 'booked', 'created_by' => Auth::id()]);
+
+            // Jika ada DP, simpan ke payments
+            if ($request->filled('down_payment') && $request->down_payment > 0) {
+                Payment::create([
+                    'reservation_id' => $reservation->id,
+                    'amount' => $request->down_payment,
+                    'payment_date' => now(),
+                    'method' => $request->down_payment_method,
+                    'notes' => $request->notes_down_payment,
+                    'created_by' => Auth::id(),
+                ]);
+
+                // Ubah status ke confirmed jika DP masuk
+                // $reservation->update(['status' => 'confirmed']);
+                
+                // ubah status kamar yang dipesan menjadi booked 
+                $reservation->room->update(['status' => 'booked']);
+            }
+
+            DB::commit();
 
             return response()->json([
                 'success' => true,
@@ -90,8 +130,10 @@ class ReservationController extends Controller
                 'redirect' => route('reservation.create')
             ], 201);
         } catch (HttpResponseException $e) {
+            DB::rollBack();
             throw $e;
         } catch (\Throwable $th) {
+            DB::rollBack();
             return response()->json([
                 'success' => false,
                 'message' => $th->getMessage(),
@@ -101,7 +143,16 @@ class ReservationController extends Controller
 
     public function show(string $id)
     {
-        //
+        $reservation = Reservation::with(['guest', 'room', 'payments'])->findOrFail($id);
+
+        $checkIn = \Carbon\Carbon::parse($reservation->check_in_date);
+        $checkOut = \Carbon\Carbon::parse($reservation->check_out_date);
+        $reservation->duration = $checkIn->diffInDays($checkOut);
+        $reservation->total_paid = $reservation->payments->sum('amount');
+
+        return view('reservation.show', compact('reservation'), [
+            'title' => $this->title,
+        ]);
     }
 
     public function edit(string $id)

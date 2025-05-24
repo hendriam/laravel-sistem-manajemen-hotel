@@ -1,8 +1,6 @@
 @extends('app.layout')
 
 @section('css')
-    <link rel="stylesheet" href="{{ asset('assets/plugins/select2/css/select2.min.css')}}">
-    <link rel="stylesheet" href="{{ asset('assets/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css')}}">
     <link rel="stylesheet" href="{{ asset('assets/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css')}}">
     <link rel="stylesheet" href="{{ asset('assets/plugins/daterangepicker/daterangepicker.css')}}">
     <link rel="stylesheet" href="{{ asset('assets/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css')}}">
@@ -33,18 +31,50 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-12">
-                        <form action="{{ route('reservation.store') }}" method="post" id="formStore" enctype="multipart/form-data" autocomplete="off">
+                        <form action="{{ route('reservation.payment.store', $reservation->id) }}" method="post" id="formStore" enctype="multipart/form-data" autocomplete="off">
                             @csrf
                             <div class="card">
                                 <div class="card-header">
                                     <h5 class="card-title">Form Tambah {{ $title }}</h5>
                                     <div class="card-tools">
-                                        <a href="{{ route('guest.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Tambahkan Tamu</a>
-                                        <a href="{{ route('reservation.index') }}" class="btn btn-warning"><i class="fas fa-arrow-left"></i> Kembali</a>
+                                        <a href="{{ route('reservation.show', $reservation->id) }}" class="btn btn-warning"><i class="fas fa-arrow-left"></i> Kembali</a>
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    @include('reservation.form', ['data' => null, 'guests' => null, 'rooms' => null, 'isCreate' => true])
+                                    <div class="alert alert-info">
+                                        <strong>Total:</strong> Rp{{ number_format($reservation->room->price * $reservation->duration, 0, ',', '.') }} <br>
+                                        <strong>Dibayar:</strong> Rp{{ number_format($reservation->total_paid, 0, ',', '.') }}<br>
+                                        <strong>Sisa:</strong> Rp{{ number_format(($reservation->room->price * $reservation->duration) - $reservation->total_paid, 0, ',', '.') }}
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-2">
+                                                <label for="amount" class="form-label">Jumlah Pembayaran (Rp)</label>
+                                                <input type="number" id="amount" name="amount" class="form-control " placeholder="Contoh: 100000">
+                                            </div>
+
+                                            <div class="mb-2">
+                                                <label for="payment_date" class="form-label">Tgl. Pembayaran</label>
+                                                <input type="text" id="payment_date" name="payment_date" data-target="#payment_date" data-toggle="datetimepicker" class="form-control datetimepicker-input" placeholder="Contoh: 2025-05-14">
+                                            </div>
+
+                                            <div class="mb-2">
+                                                <label for="method" class="form-label">Metode Bayar</label>
+                                                <select class="form-control" name="method" id="method">
+                                                    <option value="">-- Select metode pembayaran --</option>
+                                                    <option value="cash" {{ ($reservation->method ?? '') == "cash" ? "selected" : "" }}>Cash</option>
+                                                    <option value="transfer" {{ ($reservation->method ?? '') == "transfer" ? "selected" : "" }}>Transfer</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-2">
+                                                <label for="notes" class="form-label">Catatan</label>
+                                                <textarea name="notes" id="notes" class="form-control" rows="3" placeholder="Masukkan catatan jika perlu (optional)"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="card-footer">
                                     <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> <i class='fas fa-spinner fa-spin' style="display: none"></i> Simpan</button>
@@ -62,80 +92,16 @@
 <!-- /.content -->
 
 @section('js')
-    <script src="{{ asset('assets/plugins/select2/js/select2.full.min.js')}}"></script>
     <script src="{{ asset('assets/plugins/sweetalert2/sweetalert2.min.js')}}"></script>
     <script src="{{ asset('assets/plugins/moment/moment.min.js')}}"></script>
     <script src="{{ asset('assets/plugins/daterangepicker/daterangepicker.js')}}"></script>
     <script src="{{ asset('assets/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js')}}"></script>
     <script>
         //Date picker check_in_date
-        $('#check_in_date').datetimepicker({
+        $('#payment_date').datetimepicker({
             format: 'YYYY-MM-DD'
         });
 
-        //Date picker check_out_date
-        $('#check_out_date').datetimepicker({
-            format: 'YYYY-MM-DD'
-        });
-
-        //Initialize Select2 Elements
-        $('.select2bs44').select2({
-            theme: 'bootstrap4',
-            placeholder: "-- Cari nama tamu --",
-            minimumInputLength: 2,
-            ajax: {
-                url: '{{ route("guest.search") }}',
-                dataType: 'json',
-                delay: 250,
-                data: function (params) {
-                    return {
-                        q: params.term
-                    };
-                },
-                processResults: function (data) {
-                    return {
-                        results: data.map(function (item) {
-                            return {
-                                id: item.id,
-                                text: item.name,
-                                name: item.name,
-                            };
-                        })
-                    };
-                },
-                cache: true
-            }
-        })
-
-        //Initialize Select2 Elements
-        $('.select2bs4').select2({
-            theme: 'bootstrap4',
-            placeholder: "-- Pilih kamar --",
-            minimumInputLength: 2,
-            ajax: {
-                url: '{{ route("room.search") }}',
-                dataType: 'json',
-                delay: 250,
-                data: function (params) {
-                    return {
-                        q: params.term
-                    };
-                },
-                processResults: function (data) {
-                    return {
-                        results: data.map(function (item) {
-                            return {
-                                id: item.id,
-                                text: item.text,
-                                name: item.name,
-                            };
-                        })
-                    };
-                },
-                cache: true
-            }
-        })
-        
         $('#formStore').on('submit', function (e) {
             e.preventDefault();
             
@@ -166,31 +132,17 @@
                 error: function (xhr) {
                     if (xhr.status === 422) {
                         const errors = xhr.responseJSON.errors;
-
-                        if (errors.guest_id) {
-                            $('#guest_id').addClass('is-invalid');
-                            $('#roomType .select2-container').after(`<div class="invalid-feedback">${errors.guest_id}</div>`);
-                        }
-
-                        if (errors.room_id) {
-                            $('#room_id').addClass('is-invalid');
-                            $('#floor .select2-container').after(`<div class="invalid-feedback">${errors.room_id}</div>`);
-                        }
-
-                        if (errors.check_in_date) {
-                            $('#check_in_date').addClass('is-invalid').after(`<div class="invalid-feedback">${errors.check_in_date}</div>`);
+                       
+                        if (errors.amount) {
+                            $('#amount').addClass('is-invalid').after(`<div class="invalid-feedback">${errors.amount}</div>`);
                         }
                         
-                        if (errors.check_out_date) {
-                            $('#check_out_date').addClass('is-invalid').after(`<div class="invalid-feedback">${errors.check_out_date}</div>`);
+                        if (errors.payment_date) {
+                            $('#payment_date').addClass('is-invalid').after(`<div class="invalid-feedback">${errors.payment_date}</div>`);
                         }
 
-                        if (errors.down_payment) {
-                            $('#down_payment').addClass('is-invalid').after(`<div class="invalid-feedback">${errors.down_payment}</div>`);
-                        }
-
-                        if (errors.down_payment_method) {
-                            $('#down_payment_method').addClass('is-invalid').after(`<div class="invalid-feedback">${errors.down_payment_method}</div>`);
+                        if (errors.method) {
+                            $('#method').addClass('is-invalid').after(`<div class="invalid-feedback">${errors.method}</div>`);
                         }
 
                     } else {

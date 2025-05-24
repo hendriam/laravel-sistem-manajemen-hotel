@@ -36,4 +36,14 @@ class Reservation extends Model
     {
         return $this->belongsTo(User::class, 'updated_by');
     }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
+
+    public function total_paid()
+    {
+        return $this->payments()->sum('amount');
+    }
 }
