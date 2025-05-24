@@ -29,6 +29,11 @@
 				@if (auth()->user()->role == "administrator")
 					<li class="nav-header">Master</li>
 					<li class="nav-item">
+						<a href="{{ route('user.index') }}" class="nav-link {{ request()->routeIs('user.*') ? 'active' : '' }}">
+							<i class="far fa-user nav-icon"></i> <p>User</p>
+						</a>
+					</li>
+					<li class="nav-item">
 						<a href="{{ route('floor.index') }}" class="nav-link {{ request()->routeIs('floor.*') ? 'active' : '' }}">
 							<i class="fas fa-dumbbell nav-icon"></i> <p>Lantai</p>
 						</a>
@@ -45,20 +50,20 @@
 							<i class="fas fa-bed nav-icon"></i> <p>Kamar</p>
 						</a>
 					</li>
-
-					<li class="nav-header">Transaksi</li>
-					<li class="nav-item">
-						<a href="{{ route('guest.index') }}" class="nav-link {{ request()->routeIs('guest.*') ? 'active' : '' }}">
-							<i class="fas fa-address-card nav-icon"></i> <p>Buku Tamu</p>
-						</a>
-					</li>
-
-					<li class="nav-item">
-						<a href="{{ route('reservation.index') }}" class="nav-link {{ request()->routeIs('reservation.*') ? 'active' : '' }}">
-							<i class="fas fa-book nav-icon"></i> <p>Reservasi</p>
-						</a>
-					</li>
 				@endif
+
+				<li class="nav-header">Transaksi</li>
+				<li class="nav-item">
+					<a href="{{ route('guest.index') }}" class="nav-link {{ request()->routeIs('guest.*') ? 'active' : '' }}">
+						<i class="fas fa-address-card nav-icon"></i> <p>Buku Tamu</p>
+					</a>
+				</li>
+
+				<li class="nav-item">
+					<a href="{{ route('reservation.index') }}" class="nav-link {{ request()->routeIs('reservation.*') ? 'active' : '' }}">
+						<i class="fas fa-book nav-icon"></i> <p>Reservasi</p>
+					</a>
+				</li>
 			</ul>
 		</nav>
 		<!-- /.sidebar-menu -->

@@ -9,6 +9,8 @@ use App\Http\Controllers\RoomController;
 use App\Http\Controllers\GuestController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\UserController;
+
 
 Route::get('/', [AuthController::class, 'login'])->name('login');
 Route::post('/', [AuthController::class, 'authenticate']);
@@ -17,6 +19,14 @@ Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+    // User
+    Route::match(['get', 'post'], 'user', [UserController::class, 'index'])->name('user.index');
+    Route::get('user/tambah', [UserController::class, 'create'])->name('user.create');
+    Route::post('user/store', [UserController::class, 'store'])->name('user.store');
+    Route::get('user/edit/{id}', [UserController::class, 'edit'])->name('user.edit');
+    Route::put('user/{id}', [UserController::class, 'update'])->name('user.update');
+    Route::delete('user/{id}', [UserController::class, 'destroy'])->name('user.destroy');
+    
     // Master lantai
     Route::match(['get', 'post'], 'lantai', [FloorController::class, 'index'])->name('floor.index');
     Route::get('lantai/tambah', [FloorController::class, 'create'])->name('floor.create');
