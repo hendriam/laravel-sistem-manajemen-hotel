@@ -13,9 +13,6 @@ class RoomController extends Controller
 {
     protected string $title = "Kamar";
 
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -67,9 +64,6 @@ class RoomController extends Controller
         return view('room.index', ['title' => $this->title]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         return view('room.create', [
@@ -77,9 +71,6 @@ class RoomController extends Controller
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         // Validasi
@@ -108,9 +99,6 @@ class RoomController extends Controller
         }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         $data = Room::findOrFail($id);
@@ -121,9 +109,6 @@ class RoomController extends Controller
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         // Validasi
@@ -162,9 +147,6 @@ class RoomController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         //
