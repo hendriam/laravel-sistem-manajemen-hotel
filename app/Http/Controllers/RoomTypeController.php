@@ -10,9 +10,6 @@ class RoomTypeController extends Controller
 {
     protected string $title = "Tipe Kamar";
 
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -60,9 +57,6 @@ class RoomTypeController extends Controller
         return view('room_types.index', ['title' => $this->title]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         return view('room_types.create', [
@@ -70,9 +64,6 @@ class RoomTypeController extends Controller
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         // Validasi
@@ -86,26 +77,17 @@ class RoomTypeController extends Controller
         return redirect()->route('room-types.create')->with('success', 'Data berhasil ditambahkan');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         $data = RoomType::findOrFail($id);
         return view('room_types.edit', ['title' => $this->title, 'data' => $data]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         $roomType = RoomType::findOrFail($id);
@@ -120,9 +102,6 @@ class RoomTypeController extends Controller
         return redirect()->route('room-types.edit', $id)->with('success', 'Data berhasil diperbarui');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         try {
