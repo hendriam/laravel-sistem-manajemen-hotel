@@ -20,7 +20,7 @@
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{{ route('reservation.index') }}">{{ $title }}</a></li>
-                        <li class="breadcrumb-item active">Tambah</li>
+                        <li class="breadcrumb-item active">Check-in Lansung</li>
                         </ol>
                     </div><!-- /.col -->
                 </div><!-- /.row -->
@@ -37,7 +37,7 @@
                             @csrf
                             <div class="card">
                                 <div class="card-header">
-                                    <h5 class="card-title">Form Tambah {{ $title }}</h5>
+                                    <h5 class="card-title">Form Checkin Lansung</h5>
                                     <div class="card-tools">
                                         <a href="{{ route('guest.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Tambahkan Tamu</a>
                                         <a href="{{ route('reservation.index') }}" class="btn btn-warning"><i class="fas fa-arrow-left"></i> Kembali</a>
