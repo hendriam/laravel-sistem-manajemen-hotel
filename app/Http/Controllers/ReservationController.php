@@ -285,11 +285,13 @@ class ReservationController extends Controller
         ]);
 
         try {
-            Reservation::create($request->all() + [
+            $reservation = Reservation::create($request->all() + [
                 'check_in_date' => now()->toDateString(),
                 'status' => 'checked_in',
                 'created_by' => Auth::id()
             ]);
+
+            $reservation->room->update(['status' => 'occupied']);
 
             return response()->json([
                 'success' => true,
