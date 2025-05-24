@@ -32,10 +32,12 @@
 			<input type="text" id="check_out_date" name="check_out_date" value="{{ $data->check_out_date ?? '' }}" data-target="#checkOutDate" data-toggle="datetimepicker" class="form-control datetimepicker-input" placeholder="Contoh: 2025-05-14">
 		</div>
 
-		<div class="mb-2">
-			<label for="notes" class="form-label">Catatan Reservasi</label>
-			<textarea name="notes" id="notes" class="form-control" rows="3" placeholder="Masukkan catatan reservasi jika perlu (optional)">{{ $data->notes ?? '' }}</textarea>
-		</div>
+		@if($isCreate)
+			<div class="mb-2">
+				<label for="notes" class="form-label">Catatan Reservasi  (optional)</label>
+				<textarea name="notes" id="notes" class="form-control" rows="3" placeholder="Masukkan catatan reservasi jika perlu">{{ $data->notes ?? '' }}</textarea>
+			</div>
+		@endif
 
 		<!-- @if($data)
 			<div class="mb-2">
@@ -68,8 +70,13 @@
 			</div>
 		
 			<div class="mb-2">
-				<label for="notes_down_payment" class="form-label">Catatan DP / Uang Muka</label>
-				<textarea name="notes_down_payment" id="notes_down_payment" class="form-control" rows="3" placeholder="Masukkan catatan dp jika perlu (optional)"></textarea>
+				<label for="notes_down_payment" class="form-label">Catatan DP / Uang Muka  (optional)</label>
+				<textarea name="notes_down_payment" id="notes_down_payment" class="form-control" rows="3" placeholder="Masukkan catatan dp jika perlu"></textarea>
+			</div>
+		@else
+			<div class="mb-2">
+				<label for="notes" class="form-label">Catatan Reservasi  (optional)</label>
+				<textarea name="notes" id="notes" class="form-control" rows="3" placeholder="Masukkan catatan reservasi jika perlu">{{ $data->notes ?? '' }}</textarea>
 			</div>
 		@endif 
 	</div>

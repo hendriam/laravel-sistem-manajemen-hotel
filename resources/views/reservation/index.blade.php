@@ -60,24 +60,26 @@
                                     </div>
                                 @endif
 
-                                <table id="data_table" class="table table-bordered table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>No.</th>
-                                            <th>Nama Tamu</th>
-                                            <th>Kamar</th>
-                                            <th>Tgl. Check-In</th>
-                                            <th>Tgl. Check-Out</th>
-                                            <th>Status</th>
-                                            <th>Keterangan</th>
-                                            <th>Diinput oleh</th>
-                                            <th>Tgl.Input</th>
-                                            <th style="width: 300px; text-align:center;">#</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
+                                <div class="table-responsive-md">
+                                    <table id="data_table" class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>No.</th>
+                                                <th>Nama Tamu</th>
+                                                <th>Kamar</th>
+                                                <th>Tgl. Check-In</th>
+                                                <th>Tgl. Check-Out</th>
+                                                <th>Status</th>
+                                                <th>Keterangan</th>
+                                                <th>Diinput oleh</th>
+                                                <th>Tgl.Input</th>
+                                                <th style="width: 300px; text-align:center;">#</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -153,17 +155,20 @@
                     data: 'status',
                     render: function (data, type, row) {
                         switch (data) {
-                            case "booked" :
-                                return '<span class="badge badge-warning">Booking</span>';
+                            case "pending" :
+                                return '<span class="badge badge-secondary">Belum Bayar DP</span>';
+                                break;
+                            case "confirmed" :
+                                return '<span class="badge badge-warning">Sudah Bayar DP</span>';
                                 break;
                             case "checked_in":
-                                return '<span class="badge badge-success">Check in</span>';
+                                return '<span class="badge badge-success">Sudah Check-in</span>';
                                 break;
                             case "cancelled":
                                 return '<span class="badge badge-danger">Batal</span>';
                                 break;
                             case "completed":
-                                return '<span class="badge badge-info">Check out</span>';
+                                return '<span class="badge badge-info">Selesai</span>';
                                 break;
                         }
                     },
@@ -188,9 +193,16 @@
                     data: null,
                     render : function(data, type, row){
                         switch (data.status) {
-                            case 'booked':
+                            case 'pending':
                                 return  '<a href="{{ route("reservation.index") }}/edit/'+data.id+'" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i> Edit</a> &nbsp'+
-                                '<button type="button" class="btn btn-sm btn-success btn-checkin" data-id="'+data.id+'"><i class="fas fa-check"></i> Check-in</button> &nbsp' +
+                                '<button type="button" class="btn btn-sm btn-success btn-confirm" data-id="'+data.id+'"><i class="fas fa-check"></i> Confirm</button> &nbsp' +
+                                '<a href="{{ route("reservation.index") }}/show/'+data.id+'" class="btn btn-sm btn-info"><i class="fas fa-wallet"></i> Bayar</a> &nbsp'+
+                                '<button type="button" class="btn btn-sm btn-danger btn-cancel" data-id="'+data.id+'"><i class="fas fa-window-close"></i> Batal</button> &nbsp';
+                                break;
+                            case 'confirmed':
+                                return  '<a href="{{ route("reservation.index") }}/edit/'+data.id+'" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i> Edit</a> &nbsp'+
+                                // '<button type="button" class="btn btn-sm btn-success btn-checkin" data-id="'+data.id+'"><i class="fas fa-check"></i> Check-in</button> &nbsp' +
+                                '<a href="{{ route("reservation.index") }}/check-in/'+data.id+'" class="btn btn-sm btn-success"><i class="fas fa-check"></i> Check-in</a> &nbsp'+
                                 '<a href="{{ route("reservation.index") }}/show/'+data.id+'" class="btn btn-sm btn-info"><i class="fas fa-eye"></i> Detail</a> &nbsp'+
                                 '<button type="button" class="btn btn-sm btn-danger btn-cancel" data-id="'+data.id+'"><i class="fas fa-window-close"></i> Batal</button> &nbsp';
                                 break;
@@ -212,6 +224,49 @@
                 {targets: [9], className: 'dt-center'}
             ],
         });
+
+        $('#data_table').on('click', '.btn-confirm', function () {
+            const id = $(this).data('id');
+            Swal.fire({
+                title: "Anda yakin untuk confirm data ini?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes!",
+                cancelButtonText: "Tidak",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '{{ route("reservation.index") }}/confirm/'+id,
+                        type: 'PUT',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        success: function (res) {
+                            Swal.fire({
+                                title: "Success!",
+                                text: "Berhasil konfirmasi!",
+                                icon: "success",
+                            });
+                            $('#data_table').DataTable().ajax.reload(null, false); // reload tanpa reset halaman
+                        },
+                        error: function (xhr) {
+                            let message = 'Gagal konfirmasi';
+                            if (xhr.responseJSON && xhr.responseJSON.message) {
+                                message = xhr.responseJSON.message;
+                            }
+                            Swal.fire({
+                                title: "Failed!",
+                                text: message,
+                                icon: "error",
+                            });
+                        }
+                    });
+                }
+            });
+        });
+
 
         $('#data_table').on('click', '.btn-checkin', function () {
             const id = $(this).data('id');

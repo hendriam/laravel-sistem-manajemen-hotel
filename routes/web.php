@@ -74,7 +74,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('reservasi/edit/{id}', [ReservationController::class, 'edit'])->name('reservation.edit');
     Route::get('reservasi/show/{id}', [ReservationController::class, 'show'])->name('reservation.show');
     Route::put('reservasi/{id}', [ReservationController::class, 'update'])->name('reservation.update');
-    Route::put('reservasi/check-in/{id}', [ReservationController::class, 'checkIn'])->name('reservation.checkIn');
+    Route::put('reservasi/confirm/{id}', [ReservationController::class, 'confirm'])->name('reservation.confirm');
+    Route::get('reservasi/check-in/{id}', [ReservationController::class, 'checkIn'])->name('reservation.checkIn');
+    Route::put('reservasi/check-in/{id}', [ReservationController::class, 'checkInProcess'])->name('reservation.checkInProcess');
     Route::put('reservasi/check-out/{id}', [ReservationController::class, 'checkOut'])->name('reservation.checkOut');
     Route::put('reservasi/cancel/{id}', [ReservationController::class, 'cancel'])->name('reservation.cancel');
     Route::get('reservasi/checkin-langsung', [ReservationController::class, 'createDirectCheckin'])->name('reservation.direct.create');

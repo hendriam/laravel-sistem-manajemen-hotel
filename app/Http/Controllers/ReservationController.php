@@ -89,7 +89,7 @@ class ReservationController extends Controller
         
         // Cek apakah tamu sudah punya reservasi aktif
         $existing = Reservation::where('guest_id', $request->guest_id)
-            ->whereIn('status', ['booked', 'checked_in'])
+            ->whereIn('status', ['pending', 'checked_in'])
             ->first();
         
         if ($existing) {
@@ -102,10 +102,18 @@ class ReservationController extends Controller
         DB::beginTransaction();
 
         try {
-            $reservation = Reservation::create($request->all() + ['status' => 'booked', 'created_by' => Auth::id()]);
+            $reservation = Reservation::create($request->all() + ['created_by' => Auth::id()]);
 
             // Jika ada DP, simpan ke payments
             if ($request->filled('down_payment') && $request->down_payment > 0) {
+
+                if(!$this->checkDpAmout($reservation->room->price, $request->down_payment)) {
+                    throw new HttpResponseException(response()->json([
+                        'success' => false,
+                        'message' => 'Jumlah DP harus minimal 25% dari total biaya.',
+                    ], 400));
+                }
+
                 Payment::create([
                     'reservation_id' => $reservation->id,
                     'amount' => $request->down_payment,
@@ -118,8 +126,6 @@ class ReservationController extends Controller
                 // Ubah status ke confirmed jika DP masuk
                 // $reservation->update(['status' => 'confirmed']);
                 
-                // ubah status kamar yang dipesan menjadi booked 
-                $reservation->room->update(['status' => 'booked']);
             }
 
             DB::commit();
@@ -138,6 +144,15 @@ class ReservationController extends Controller
                 'success' => false,
                 'message' => $th->getMessage(),
             ], 500);
+        }
+    }
+
+    public function checkDpAmout($totalBayar, $nominalDP) {
+        $dpMinimum = $totalBayar * 0.25; 
+        if ($nominalDP >= $dpMinimum) {
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -173,7 +188,7 @@ class ReservationController extends Controller
             'check_in_date' => 'required|date',
             'check_out_date' => 'required|date|after:check_in_date',
             'notes' => 'nullable|string',
-            'status' => 'required|in:booked,checked_in,cancelled,completed',
+            // 'status' => 'required|in:pending,confirmed,checked_in,cancelled,completed',
         ]);
 
         try {
@@ -202,7 +217,7 @@ class ReservationController extends Controller
         }
     }
 
-    public function checkIn(string $id)
+    public function confirm(string $id)
     {
         try {
             $reservation = Reservation::findOrFail($id);
@@ -213,11 +228,91 @@ class ReservationController extends Controller
                 ], 404));
             }
 
-            if ($reservation->status !== 'booked') {
+            $reservation->update([
+                'status' => 'confirmed',
+                'updated_by' => Auth::id()
+            ]);
+
+            // ubah status kamar yang dipesan menjadi booked 
+            $reservation->room->update(['status' => 'booked']);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data berhasil di check-in.',
+            ], 200);
+        } catch (HttpResponseException $e) {
+            throw $e;
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'message' => $th->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function checkin(string $id)
+    {
+        $reservation = Reservation::with(['guest', 'room', 'payments'])->findOrFail($id);
+
+        $checkIn = \Carbon\Carbon::parse($reservation->check_in_date);
+        $checkOut = \Carbon\Carbon::parse($reservation->check_out_date);
+        $reservation->duration = $checkIn->diffInDays($checkOut);
+        $reservation->total_paid = $reservation->payments->sum('amount');
+
+        return view('reservation.checkin', compact('reservation'), [
+            'title' => $this->title,
+        ]);
+    }
+
+    public function checkInProcess(Request $request, string $id)
+    {
+        $request->validate([
+            'amount' => 'required|numeric|min:5',
+            'method' => 'required|string',
+            'notes' => 'nullable|string',
+        ]);
+        
+        try {
+            $reservation = Reservation::findOrFail($id);
+
+            if (!$reservation) {
                 throw new HttpResponseException(response()->json([
                     'success' => false,
-                    'message' => "Reservasi tidak dalam status booked.",
+                    'message' => "Data tidak ditemukan.",
+                ], 404));
+            }
+
+            if ($reservation->status !== 'confirmed') {
+                throw new HttpResponseException(response()->json([
+                    'success' => false,
+                    'message' => "Reservasi tidak dalam status confirmed.",
                 ], 400));
+            }
+
+            $checkIn = \Carbon\Carbon::parse($reservation->check_in_date);
+            $checkOut = \Carbon\Carbon::parse($reservation->check_out_date);
+            $duration = $checkIn->diffInDays($checkOut);
+            
+            $total = $reservation->room->price * $duration;
+            $paid = $reservation->payments->sum('amount');
+            $remaining = $total - $paid;
+
+            // Buat pembayaran otomatis jika belum lunas
+            if ($remaining > 0) {
+                if ($request->amount != $remaining) {
+                    throw new HttpResponseException(response()->json([
+                        'success' => false,
+                        'message' => "Jumlah pembayaran harus sesuai jumlah sisa tagihan.",
+                    ], 400));
+                }
+                Payment::create([
+                    'reservation_id' => $reservation->id,
+                    'amount' => $request->amount,
+                    'payment_date' => now(),
+                    'method' => $request->method, 
+                    'notes' => $request->notes,
+                    'created_by' => Auth::id()
+                ]);
             }
 
             $reservation->update([
@@ -230,6 +325,7 @@ class ReservationController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Data berhasil di check-in.',
+                'redirect' => route('reservation.checkIn', $id)
             ], 200);
         } catch (HttpResponseException $e) {
             throw $e;
