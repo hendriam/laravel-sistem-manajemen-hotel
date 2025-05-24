@@ -11,9 +11,6 @@ class GuestController extends Controller
 {
     protected string $title = "Data Tamu";
 
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -65,9 +62,6 @@ class GuestController extends Controller
         return view('guest.index', ['title' => $this->title]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         return view('guest.create', [
@@ -75,9 +69,6 @@ class GuestController extends Controller
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
          // Validasi
@@ -105,17 +96,11 @@ class GuestController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         $data = Guest::findOrFail($id);
@@ -124,9 +109,6 @@ class GuestController extends Controller
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         $request->validate([
@@ -164,9 +146,6 @@ class GuestController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         //
