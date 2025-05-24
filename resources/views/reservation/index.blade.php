@@ -44,7 +44,8 @@
                             <div class="card-header">
                                 <h5 class="card-title">Daftar {{ $title }}</h5>
                                 <div class="card-tools">
-                                    <a href="{{ route('reservation.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Tambah</a>
+                                    <a href="{{ route('reservation.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Tambah Reservasi</a>
+                                    <a href="{{ route('reservation.direct.create') }}" class="btn btn-warning"><i class="fas fa-plus"></i> Check-in Lansung</a>
                                 </div>
                                 <!-- /.card-tools -->
                             </div>
@@ -162,7 +163,7 @@
                                 return '<span class="badge badge-danger">Batal</span>';
                                 break;
                             case "completed":
-                                return '<span class="badge badge-info">Check out</span>';
+                                return '<span class="badge badge-success">Check out</span>';
                                 break;
                         }
                     },
@@ -186,8 +187,20 @@
                 {
                     data: null,
                     render : function(data, type, row){
-                        return  '<a href="{{ route("reservation.index") }}/edit/'+data.id+'" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i> Edit</a> &nbsp';
-                        // '<button type="button" class="btn btn-sm btn-danger btn-delete" data-id="'+data.id+'"><i class="fas fa-trash"></i> Hapus</button> &nbsp';
+                        switch (data.status) {
+                            case 'booked':
+                                return  '<a href="{{ route("reservation.index") }}/edit/'+data.id+'" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i> Edit</a> &nbsp'+
+                                '<button type="button" class="btn btn-sm btn-success btn-checkin" data-id="'+data.id+'"><i class="fas fa-check"></i> Check-in</button> &nbsp' +
+                                '<button type="button" class="btn btn-sm btn-danger btn-cancel" data-id="'+data.id+'"><i class="fas fa-window-close"></i> Batal</button> &nbsp';
+                                break;
+                            case 'checked_in':
+                                return  '<a href="{{ route("reservation.index") }}/edit/'+data.id+'" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i> Edit</a> &nbsp'+
+                                '<button type="button" class="btn btn-sm btn-success btn-checkout" data-id="'+data.id+'"><i class="fas fa-check"></i> Check-out</button> &nbsp';
+                                break;
+                            default:
+                                return '-';
+                            break;
+                        }
                     },
                     orderable: false,
                 }
@@ -198,34 +211,118 @@
             ],
         });
 
-        $('#data_table').on('click', '.btn-delete', function () {
+        $('#data_table').on('click', '.btn-checkin', function () {
             const id = $(this).data('id');
             Swal.fire({
-                title: "Anda yakin untuk data ini?",
+                title: "Anda yakin untuk check-in data ini?",
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#3085d6",
                 cancelButtonColor: "#d33",
-                confirmButtonText: "Yes, hapus!",
+                confirmButtonText: "Yes!",
                 cancelButtonText: "Tidak",
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: '{{ route("reservation.index") }}/'+id,
-                        type: 'DELETE',
+                        url: '{{ route("reservation.index") }}/check-in/'+id,
+                        type: 'PUT',
                         headers: {
                             'X-CSRF-TOKEN': '{{ csrf_token() }}'
                         },
                         success: function (res) {
                             Swal.fire({
-                                title: "Deleted!",
-                                text: "Data berhasil dihapus!",
+                                title: "Success!",
+                                text: "Berhasil check-in!",
                                 icon: "success",
                             });
                             $('#data_table').DataTable().ajax.reload(null, false); // reload tanpa reset halaman
                         },
                         error: function (xhr) {
-                            let message = 'Gagal menghapus data';
+                            let message = 'Gagal checkin-in';
+                            if (xhr.responseJSON && xhr.responseJSON.message) {
+                                message = xhr.responseJSON.message;
+                            }
+                            Swal.fire({
+                                title: "Failed!",
+                                text: message,
+                                icon: "error",
+                            });
+                        }
+                    });
+                }
+            });
+        });
+
+        $('#data_table').on('click', '.btn-checkout', function () {
+            const id = $(this).data('id');
+            Swal.fire({
+                title: "Anda yakin untuk check-out data ini?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes!",
+                cancelButtonText: "Tidak",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '{{ route("reservation.index") }}/check-out/'+id,
+                        type: 'PUT',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        success: function (res) {
+                            Swal.fire({
+                                title: "Success!",
+                                text: "Berhasil check-out!",
+                                icon: "success",
+                            });
+                            $('#data_table').DataTable().ajax.reload(null, false); // reload tanpa reset halaman
+                        },
+                        error: function (xhr) {
+                            let message = 'Gagal checkin-out';
+                            if (xhr.responseJSON && xhr.responseJSON.message) {
+                                message = xhr.responseJSON.message;
+                            }
+                            Swal.fire({
+                                title: "Failed!",
+                                text: message,
+                                icon: "error",
+                            });
+                        }
+                    });
+                }
+            });
+        });
+
+        $('#data_table').on('click', '.btn-cancel', function () {
+            const id = $(this).data('id');
+            Swal.fire({
+                title: "Anda yakin untuk batalkan data ini?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes!",
+                cancelButtonText: "Tidak",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '{{ route("reservation.index") }}/cancel/'+id,
+                        type: 'PUT',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        success: function (res) {
+                            Swal.fire({
+                                title: "Success!",
+                                text: "Berhasil batalkan!",
+                                icon: "success",
+                            });
+                            $('#data_table').DataTable().ajax.reload(null, false); // reload tanpa reset halaman
+                        },
+                        error: function (xhr) {
+                            let message = 'Gagal batalkan';
                             if (xhr.responseJSON && xhr.responseJSON.message) {
                                 message = xhr.responseJSON.message;
                             }

@@ -64,9 +64,6 @@ class ReservationController extends Controller
         return view('reservation.index', ['title' => $this->title]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         return view('reservation.create', [
@@ -74,9 +71,6 @@ class ReservationController extends Controller
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $request->validate([
@@ -105,17 +99,11 @@ class ReservationController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         $data = Reservation::findOrFail($id);
@@ -126,9 +114,6 @@ class ReservationController extends Controller
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         $request->validate([
@@ -166,11 +151,158 @@ class ReservationController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function checkIn(string $id)
     {
-        //
+        try {
+            $reservation = Reservation::findOrFail($id);
+            if (!$reservation) {
+                throw new HttpResponseException(response()->json([
+                    'success' => false,
+                    'message' => "Data tidak ditemukan.",
+                ], 404));
+            }
+
+            if ($reservation->status !== 'booked') {
+                throw new HttpResponseException(response()->json([
+                    'success' => false,
+                    'message' => "Reservasi tidak dalam status booked.",
+                ], 400));
+            }
+
+            $reservation->update([
+                'status' => 'checked_in',
+                'updated_by' => Auth::id()
+            ]);
+
+            $reservation->room->update(['status' => 'occupied']);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data berhasil di check-in.',
+            ], 200);
+        } catch (HttpResponseException $e) {
+            throw $e;
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'message' => $th->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function checkOut(string $id)
+    {
+        try {
+            $reservation = Reservation::findOrFail($id);
+            if (!$reservation) {
+                throw new HttpResponseException(response()->json([
+                    'success' => false,
+                    'message' => "Data tidak ditemukan.",
+                ], 404));
+            }
+
+            if ($reservation->status !== 'checked_in') {
+                throw new HttpResponseException(response()->json([
+                    'success' => false,
+                    'message' => "Reservasi tidak dalam status check-in.",
+                ], 400));
+            }
+
+            $reservation->update([
+                'status' => 'completed',
+                'updated_by' => Auth::id()
+            ]);
+
+            $reservation->room->update(['status' => 'available']);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data berhasil di check-out.',
+            ], 200);
+        } catch (HttpResponseException $e) {
+            throw $e;
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'message' => $th->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function cancel(string $id)
+    {
+        try {
+            $reservation = Reservation::findOrFail($id);
+            if (!$reservation) {
+                throw new HttpResponseException(response()->json([
+                    'success' => false,
+                    'message' => "Data tidak ditemukan.",
+                ], 404));
+            }
+
+            if ($reservation->status === 'cancelled') {
+                throw new HttpResponseException(response()->json([
+                    'success' => false,
+                    'message' => "Reservasi sudah dalam status batal.",
+                ], 400));
+            }
+
+            $reservation->update([
+                'status' => 'cancelled',
+                'updated_by' => Auth::id()
+            ]);
+
+            $reservation->room->update(['status' => 'available']);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data berhasil di batalkan.',
+            ], 200);
+        } catch (HttpResponseException $e) {
+            throw $e;
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'message' => $th->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function createDirectCheckin()
+    {
+        return view('reservation.direct_checkin',[
+            'title' => 'Buat Check-in Lansung'
+        ]);
+    }
+
+    public function storeDirectCheckin(Request $request)
+    {
+        $request->validate([
+            'guest_id' => 'required|exists:guests,id',
+            'room_id' => 'required|exists:rooms,id',
+            'check_out_date' => 'required|date|after_or_equal:today',
+            'notes' => 'nullable|string',
+        ]);
+
+        try {
+            Reservation::create($request->all() + [
+                'check_in_date' => now()->toDateString(),
+                'status' => 'checked_in',
+                'created_by' => Auth::id()
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data berhasil disimpan.',
+                'redirect' => route('reservation.direct.create')
+            ], 201);
+        } catch (HttpResponseException $e) {
+            throw $e;
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'message' => $th->getMessage(),
+            ], 500);
+        }
     }
 }

@@ -33,7 +33,7 @@
 		</div>
 	</div>
 	<div class="col-md-6">
-		@if($data)
+		<!-- @if($data)
 			<div class="mb-2">
 				<label for="status" class="form-label">Status</label>
 				<select class="form-control" name="status" id="status">
@@ -44,7 +44,7 @@
 					<option value="cancelled" {{ ($data->status ?? '') == "cancelled" ? "selected" : "" }}>Batal</option>
 				</select>
 			</div>
-		@endif
+		@endif -->
 	
 		<div class="mb-2">
 			<label for="notes" class="form-label">Catatan</label>

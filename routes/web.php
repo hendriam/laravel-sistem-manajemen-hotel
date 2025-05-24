@@ -57,4 +57,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('reservasi/store', [ReservationController::class, 'store'])->name('reservation.store');
     Route::get('reservasi/edit/{id}', [ReservationController::class, 'edit'])->name('reservation.edit');
     Route::put('reservasi/{id}', [ReservationController::class, 'update'])->name('reservation.update');
+    Route::put('reservasi/check-in/{id}', [ReservationController::class, 'checkIn'])->name('reservation.checkIn');
+    Route::put('reservasi/check-out/{id}', [ReservationController::class, 'checkOut'])->name('reservation.checkOut');
+    Route::put('reservasi/cancel/{id}', [ReservationController::class, 'cancel'])->name('reservation.cancel');
+    Route::get('reservasi/checkin-langsung', [ReservationController::class, 'createDirectCheckin'])->name('reservation.direct.create');
+    Route::post('reservasi/checkin-langsung', [ReservationController::class, 'storeDirectCheckin'])->name('reservation.direct.store');
 });
