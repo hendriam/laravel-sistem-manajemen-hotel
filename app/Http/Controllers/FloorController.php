@@ -10,9 +10,6 @@ class FloorController extends Controller
 {
     protected string $title = "Lantai";
     
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -60,17 +57,11 @@ class FloorController extends Controller
         return view('floor.index', ['title' => $this->title]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         return view('floor.create', ['title' => $this->title]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         // Validasi
@@ -84,9 +75,6 @@ class FloorController extends Controller
         return redirect()->route('floor.create')->with('success', 'Data berhasil ditambahkan');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         $data = Floor::findOrFail($id);
@@ -94,9 +82,6 @@ class FloorController extends Controller
     }
 
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         $floor = Floor::findOrFail($id);
@@ -111,9 +96,6 @@ class FloorController extends Controller
         return redirect()->route('floor.edit', $id)->with('success', 'Data berhasil diperbarui');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         try {
