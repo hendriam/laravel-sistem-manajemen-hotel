@@ -24,40 +24,43 @@ Route::middleware(['auth'])->group(function () {
     Route::put('profile/ganti-password/{id}', [ProfileController::class, 'changePassword'])->name('profile.ganti-password');
     Route::put('profile/update-profile/{id}', [ProfileController::class, 'updateProfile'])->name('profile.update-profile');
 
-    // User
-    Route::match(['get', 'post'], 'user', [UserController::class, 'index'])->name('user.index');
-    Route::get('user/tambah', [UserController::class, 'create'])->name('user.create');
-    Route::post('user/store', [UserController::class, 'store'])->name('user.store');
-    Route::get('user/edit/{id}', [UserController::class, 'edit'])->name('user.edit');
-    Route::put('user/{id}', [UserController::class, 'update'])->name('user.update');
-    Route::delete('user/{id}', [UserController::class, 'destroy'])->name('user.destroy');
+    // only administrator can acces this route
+    Route::middleware('role:administrator')->group(function () {
+        // User
+        Route::match(['get', 'post'], 'user', [UserController::class, 'index'])->name('user.index');
+        Route::get('user/tambah', [UserController::class, 'create'])->name('user.create');
+        Route::post('user/store', [UserController::class, 'store'])->name('user.store');
+        Route::get('user/edit/{id}', [UserController::class, 'edit'])->name('user.edit');
+        Route::put('user/{id}', [UserController::class, 'update'])->name('user.update');
+        Route::delete('user/{id}', [UserController::class, 'destroy'])->name('user.destroy');
+        
+        // Master lantai
+        Route::match(['get', 'post'], 'lantai', [FloorController::class, 'index'])->name('floor.index');
+        Route::get('lantai/tambah', [FloorController::class, 'create'])->name('floor.create');
+        Route::post('lantai/store', [FloorController::class, 'store'])->name('floor.store');
+        Route::get('lantai/edit/{id}', [FloorController::class, 'edit'])->name('floor.edit');
+        Route::put('lantai/{id}', [FloorController::class, 'update'])->name('floor.update');
+        Route::delete('lantai/{id}', [FloorController::class, 'destroy'])->name('floor.destroy');
+        Route::get('buku/search', [FloorController::class, 'search'])->name('floor.search');
     
-    // Master lantai
-    Route::match(['get', 'post'], 'lantai', [FloorController::class, 'index'])->name('floor.index');
-    Route::get('lantai/tambah', [FloorController::class, 'create'])->name('floor.create');
-    Route::post('lantai/store', [FloorController::class, 'store'])->name('floor.store');
-    Route::get('lantai/edit/{id}', [FloorController::class, 'edit'])->name('floor.edit');
-    Route::put('lantai/{id}', [FloorController::class, 'update'])->name('floor.update');
-    Route::delete('lantai/{id}', [FloorController::class, 'destroy'])->name('floor.destroy');
-    Route::get('buku/search', [FloorController::class, 'search'])->name('floor.search');
-
-    // Master tipe kamar
-    Route::match(['get', 'post'], 'tipe-kamar', [RoomTypeController::class, 'index'])->name('room-types.index');
-    Route::get('tipe-kamar/tambah', [RoomTypeController::class, 'create'])->name('room-types.create');
-    Route::post('tipe-kamar/store', [RoomTypeController::class, 'store'])->name('room-types.store');
-    Route::get('tipe-kamar/edit/{id}', [RoomTypeController::class, 'edit'])->name('room-types.edit');
-    Route::put('tipe-kamar/{id}', [RoomTypeController::class, 'update'])->name('room-types.update');
-    Route::delete('tipe-kamar/{id}', [RoomTypeController::class, 'destroy'])->name('room-types.destroy');
-    Route::get('tipe-kamar/search', [RoomTypeController::class, 'search'])->name('room-types.search');
-
-    // Master Kamar
-    Route::match(['get', 'post'], 'kamar', [RoomController::class, 'index'])->name('room.index');
-    Route::get('kamar/tambah', [RoomController::class, 'create'])->name('room.create');
-    Route::post('kamar/store', [RoomController::class, 'store'])->name('room.store');
-    Route::get('kamar/edit/{id}', [RoomController::class, 'edit'])->name('room.edit');
-    Route::put('kamar/{id}', [RoomController::class, 'update'])->name('room.update');
-    Route::delete('kamar/{id}', [RoomController::class, 'destroy'])->name('room.destroy');
-    Route::get('kamar/search', [RoomController::class, 'search'])->name('room.search');
+        // Master tipe kamar
+        Route::match(['get', 'post'], 'tipe-kamar', [RoomTypeController::class, 'index'])->name('room-types.index');
+        Route::get('tipe-kamar/tambah', [RoomTypeController::class, 'create'])->name('room-types.create');
+        Route::post('tipe-kamar/store', [RoomTypeController::class, 'store'])->name('room-types.store');
+        Route::get('tipe-kamar/edit/{id}', [RoomTypeController::class, 'edit'])->name('room-types.edit');
+        Route::put('tipe-kamar/{id}', [RoomTypeController::class, 'update'])->name('room-types.update');
+        Route::delete('tipe-kamar/{id}', [RoomTypeController::class, 'destroy'])->name('room-types.destroy');
+        Route::get('tipe-kamar/search', [RoomTypeController::class, 'search'])->name('room-types.search');
+    
+        // Master Kamar
+        Route::match(['get', 'post'], 'kamar', [RoomController::class, 'index'])->name('room.index');
+        Route::get('kamar/tambah', [RoomController::class, 'create'])->name('room.create');
+        Route::post('kamar/store', [RoomController::class, 'store'])->name('room.store');
+        Route::get('kamar/edit/{id}', [RoomController::class, 'edit'])->name('room.edit');
+        Route::put('kamar/{id}', [RoomController::class, 'update'])->name('room.update');
+        Route::delete('kamar/{id}', [RoomController::class, 'destroy'])->name('room.destroy');
+        Route::get('kamar/search', [RoomController::class, 'search'])->name('room.search');
+    });
 
     // Master buku tamu
     Route::match(['get', 'post'], 'tamu', [GuestController::class, 'index'])->name('guest.index');
@@ -85,5 +88,4 @@ Route::middleware(['auth'])->group(function () {
     // Pembayaran
     Route::get('reservasi/pembayaran/tambah/{reservation_id}', [PaymentController::class, 'create'])->name('reservation.payment.create');
     Route::post('reservasi/pembayaran/store/{reservation_id}', [PaymentController::class, 'store'])->name('reservation.payment.store');
-
 });

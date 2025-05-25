@@ -39,19 +39,6 @@
 			</div>
 		@endif
 
-		<!-- @if($data)
-			<div class="mb-2">
-				<label for="status" class="form-label">Status</label>
-				<select class="form-control" name="status" id="status">
-					<option value="">-- Select status --</option>
-					<option value="booked" {{ ($data->status ?? '') == "booked" ? "selected" : "" }}>Dibooking</option>
-					<option value="checked_in" {{ ($data->status ?? '') == "checked_in" ? "selected" : "" }}>Check in</option>
-					<option value="completed" {{ ($data->status ?? '') == "completed" ? "selected" : "" }}>Check out</option>
-					<option value="cancelled" {{ ($data->status ?? '') == "cancelled" ? "selected" : "" }}>Batal</option>
-				</select>
-			</div>
-		@endif -->
-
 	</div>
 	<div class="col-md-6">
 		@if($isCreate)
