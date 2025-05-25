@@ -252,6 +252,8 @@ class ReservationController extends Controller
 
     public function checkOut(string $id)
     {
+        DB::beginTransaction();
+
         try {
             $reservation = Reservation::findOrFail($id);
             if (!$reservation) {
@@ -264,7 +266,7 @@ class ReservationController extends Controller
             if ($reservation->status !== 'checked_in') {
                 throw new HttpResponseException(response()->json([
                     'success' => false,
-                    'message' => "Reservasi tidak dalam status check-in.",
+                    'message' => "Reservasi belum dalam status check-in.",
                 ], 400));
             }
 
@@ -273,15 +275,19 @@ class ReservationController extends Controller
                 'updated_by' => Auth::id()
             ]);
 
-            $reservation->room->update(['status' => 'available']);
+            $reservation->room->update(['status' => 'cleaning']);
+
+            DB::commit();
 
             return response()->json([
                 'success' => true,
                 'message' => 'Data berhasil di check-out.',
             ], 200);
         } catch (HttpResponseException $e) {
+            DB::rollBack();
             throw $e;
         } catch (\Throwable $th) {
+            DB::rollBack();
             return response()->json([
                 'success' => false,
                 'message' => $th->getMessage(),

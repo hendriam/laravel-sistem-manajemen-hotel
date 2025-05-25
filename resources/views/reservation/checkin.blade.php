@@ -38,20 +38,16 @@
                             @method('PUT')
                             <div class="card">
                                 <div class="card-header">
-                                    <h5 class="card-title">Check-in Reservasi {{ $reservation->id }}</h5>
+                                    <h5 class="card-title">Check-in Reservasi {{ $reservation->id }}
+                                        @if($reservation->total_paid >= $reservation->room->price * $reservation->duration) 
+                                            <span class="badge badge-success">Sudah Lunas</span><br>
+                                        @endif
+                                    </h5>
                                     <div class="card-tools">
                                         <a href="{{ route('reservation.index') }}" class="btn btn-warning"><i class="fas fa-arrow-left"></i> Kembali</a>
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    <div class="alert alert-info">
-                                        @if($reservation->total_paid >= $reservation->room->price * $reservation->duration) 
-                                            <span class="badge badge-success">Sudah Lunas</span><br>
-                                        @endif
-                                        <strong>Total:</strong> Rp{{ number_format($reservation->room->price * $reservation->duration, 0, ',', '.') }} <br>
-                                        <strong>Dibayar:</strong> Rp{{ number_format($reservation->total_paid, 0, ',', '.') }}<br>
-                                        <strong>Sisa:</strong> Rp{{ number_format(($reservation->room->price * $reservation->duration) - $reservation->total_paid, 0, ',', '.') }}
-                                    </div>
                                     @if($reservation->total_paid < $reservation->room->price * $reservation->duration) 
                                         <div class="row">
                                             <div class="col-md-6">
@@ -75,6 +71,12 @@
                                                     <textarea name="notes" id="notes" class="form-control" rows="3" placeholder="Masukkan catatan jika perlu"></textarea>
                                                 </div>
                                             </div>
+                                        </div>
+
+                                        <div class="alert alert-info">
+                                            <strong>Total:</strong> Rp{{ number_format($reservation->room->price * $reservation->duration, 0, ',', '.') }} <br>
+                                            <strong>Dibayar:</strong> Rp{{ number_format($reservation->total_paid, 0, ',', '.') }}<br>
+                                            <strong>Sisa:</strong> Rp{{ number_format(($reservation->room->price * $reservation->duration) - $reservation->total_paid, 0, ',', '.') }}
                                         </div>
                                     @endif
                                 </div>

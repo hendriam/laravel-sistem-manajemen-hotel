@@ -145,11 +145,11 @@
                 },
                 {
                     data: 'check_in_date',
-                    orderable: false,
+                    orderable: true,
                 },
                 {
                     data: 'check_out_date',
-                    orderable: false,
+                    orderable: true,
                 },
                 {
                     data: 'status',
@@ -168,7 +168,7 @@
                                 return '<span class="badge badge-danger">Batal</span>';
                                 break;
                             case "completed":
-                                return '<span class="badge badge-info">Selesai</span>';
+                                return '<span class="badge badge-info">Sudah Check-out</span>';
                                 break;
                         }
                     },
@@ -208,7 +208,7 @@
                                 break;
                             case 'checked_in':
                                 return  '<a href="{{ route("reservation.index") }}/edit/'+data.id+'" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i> Edit</a> '+
-                                '<button type="button" class="btn btn-sm btn-success btn-dark" data-id="'+data.id+'"><i class="fas fa-check"></i> Check-out</button> '+
+                                '<button type="button" class="btn btn-sm btn-success btn-checkout" data-id="'+data.id+'"><i class="fas fa-check"></i> Check-out</button> '+
                                 '<a href="{{ route("reservation.index") }}/show/'+data.id+'" class="btn btn-sm btn-info"><i class="fas fa-eye"></i> Detail</a> ';
                                 break;
                             default:
@@ -219,10 +219,25 @@
                     orderable: false,
                 }
             ],
-            order: [ 8, 'desc' ],
+            order: [ 3, 'desc' ],
             columnDefs: [
                 {targets: [9], className: 'dt-center'}
             ],
+
+            fnRowCallback: function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                // tanggal hari ini
+                const hariIni = moment();
+
+                // tanggal check-out
+                const checkOutDate = moment(aData.check_out_date);
+
+                if (aData.completed) {
+                    if (checkOutDate.isSame(hariIni, 'day')) {
+                        $('td', nRow).addClass('bg-danger');
+                    }
+                }
+            }
+
         });
 
         $('#data_table').on('click', '.btn-confirm', function () {
