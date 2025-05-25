@@ -128,7 +128,22 @@
                         title: 'Berhasil!',
                         text: res.message,
                     }).then(() => {
-                        window.location.href = res.redirect;
+                        $.ajax({
+                            url: '{{ route("reservation.index") }}/invoice/'+res.reservation.id,
+                            type: 'GET',
+                            dataType: "html",
+                            success: function (print) {                                
+                                var w = window.open('about:blank','popup','width=950,height=650,titlebar=no,toolbars=no,menubar=no,scrollbars=yes,status=no,resizable=yes,location=no');
+                                w.document.open();
+                                w.document.write(print);
+                                w.document.close();
+
+                                window.location.href = res.redirect;
+                            },
+                            error: function (xhr) {
+                                console.log(xhr);
+                            }
+                        });
                     });
                 },
                 error: function (xhr) {

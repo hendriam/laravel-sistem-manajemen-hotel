@@ -40,7 +40,6 @@
                                     <h5 class="card-title">Form Checkin Lansung</h5>
                                     <div class="card-tools">
                                         <button type="button" id="btnCreateGuest" class="btn btn-primary"><i class="fas fa-plus"></i> Tambah Tamu</button>
-                                        <!-- <a href="{{ route('guest.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Tambahkan Tamu</a> -->
                                         <a href="{{ route('reservation.index') }}" class="btn btn-warning"><i class="fas fa-arrow-left"></i> Kembali</a>
                                     </div>
                                 </div>
@@ -205,7 +204,22 @@
                         title: 'Berhasil!',
                         text: res.message,
                     }).then(() => {
-                        window.location.href = res.redirect;
+                        $.ajax({
+                            url: '{{ route("reservation.index") }}/invoice/'+res.reservation.id,
+                            type: 'GET',
+                            dataType: "html",
+                            success: function (print) {                                
+                                var w = window.open('about:blank','popup','width=950,height=650,titlebar=no,toolbars=no,menubar=no,scrollbars=yes,status=no,resizable=yes,location=no');
+                                w.document.open();
+                                w.document.write(print);
+                                w.document.close();
+
+                                window.location.href = res.redirect;
+                            },
+                            error: function (xhr) {
+                                console.log(xhr);
+                            }
+                        });
                     });
                 },
                 error: function (xhr) {

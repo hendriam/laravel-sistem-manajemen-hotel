@@ -36,6 +36,7 @@
                                     @if($reservation->total_paid < $reservation->room->price * $reservation->duration)
                                         <a href="{{ route('reservation.payment.create', $reservation->id) }}" class="btn btn-primary"><i class="fas fa-plus"></i> Tambah Pembayaran</a>
                                     @endif
+                                    <button type="button" id="btnPrint" data-id="{{ $reservation->id }}" class="btn btn-dark"><i class="fas fa-print"></i><i class='fas fa-spinner fa-spin' style="display: none"></i> Cetak</button>
                                     <a href="{{ route('reservation.index') }}" class="btn btn-warning"><i class="fas fa-arrow-left"></i> Kembali</a>
                                 </div>
                             </div>
@@ -81,3 +82,43 @@
     </div>
 @endsection
 <!-- /.content -->
+
+@section('js')
+    <script>
+        $('#btnPrint').click(function () {
+            const id = $(this).data('id');
+            
+            $('.fa-spinner').show();
+            $('.fa-print').hide();
+
+            $.ajax({
+                url: '{{ route("reservation.index") }}/invoice/'+id,
+                type: 'GET',
+                dataType: "html",
+                success: function (print) {
+                    $('.fa-spinner').hide();
+                    $('.fa-print').show();
+                    
+                    var w = window.open('about:blank','popup','width=950,height=650,titlebar=no,toolbars=no,menubar=no,scrollbars=yes,status=no,resizable=yes,location=no');
+                    w.document.open();
+                    w.document.write(print);
+                    w.document.close();
+                },
+                error: function (xhr) {
+                    let message = 'Gagal konfirmasi';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        message = xhr.responseJSON.message;
+                    }
+                    Swal.fire({
+                        title: "Failed!",
+                        text: message,
+                        icon: "error",
+                    });
+
+                    $('.fa-spinner').hide();
+                    $('.fa-print').show();
+                }
+            });
+        });
+    </script>
+@endsection

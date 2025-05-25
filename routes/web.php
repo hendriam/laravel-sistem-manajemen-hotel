@@ -12,6 +12,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\CheckinController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PrintController;
 
 Route::get('/', [AuthController::class, 'login'])->name('login');
 Route::post('/', [AuthController::class, 'authenticate']);
@@ -91,4 +92,7 @@ Route::middleware(['auth'])->group(function () {
     // Pembayaran
     Route::get('reservasi/pembayaran/tambah/{reservation_id}', [PaymentController::class, 'create'])->name('reservation.payment.create');
     Route::post('reservasi/pembayaran/store/{reservation_id}', [PaymentController::class, 'store'])->name('reservation.payment.store');
+
+    // Invoice
+    Route::get('reservasi/invoice/{id}', [PrintController::class, 'invoice'])->name('reservation.invoice');
 });

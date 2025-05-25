@@ -88,6 +88,7 @@ class CheckinController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Data berhasil di check-in.',
+                'reservation' => $reservation,
                 'redirect' => route('reservation.checkIn', $id)
             ], 200);
         } catch (HttpResponseException $e) {
@@ -172,6 +173,7 @@ class CheckinController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Data berhasil disimpan.',
+                'reservation' => $reservation,
                 'redirect' => route('reservation.direct.create')
             ], 201);
         } catch (HttpResponseException $e) {

@@ -40,7 +40,6 @@
                                     <h5 class="card-title">Form Tambah {{ $title }}</h5>
                                     <div class="card-tools">
                                         <button type="button" id="btnCreateGuest" class="btn btn-primary"><i class="fas fa-plus"></i> Tambah Tamu</button>
-                                        <!-- <a href="{{ route('guest.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Tambahkan Tamu</a> -->
                                         <a href="{{ route('reservation.index') }}" class="btn btn-warning"><i class="fas fa-arrow-left"></i> Kembali</a>
                                     </div>
                                 </div>

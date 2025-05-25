@@ -212,7 +212,7 @@
                                 '<a href="{{ route("reservation.index") }}/show/'+data.id+'" class="btn btn-sm btn-info"><i class="fas fa-eye"></i> Detail</a> ';
                                 break;
                             default:
-                                return 'Selesai';
+                                return '<a href="{{ route("reservation.index") }}/show/'+data.id+'" class="btn btn-sm btn-info"><i class="fas fa-eye"></i> Detail</a> ';
                             break;
                         }
                     },
