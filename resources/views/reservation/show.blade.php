@@ -27,7 +27,11 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header">
-                                <h5 class="card-title">Detail Reservasi {{ $reservation->id }}</h5>
+                                <h5 class="card-title">Detail Reservasi {{ $reservation->id }}
+                                    @if($reservation->total_paid >= $reservation->room->price * $reservation->duration) 
+                                        <span class="badge badge-success">Sudah Lunas</span><br>
+                                    @endif
+                                </h5>
                                 <div class="card-tools">
                                     @if($reservation->total_paid < $reservation->room->price * $reservation->duration)
                                         <a href="{{ route('reservation.payment.create', $reservation->id) }}" class="btn btn-primary"><i class="fas fa-plus"></i> Tambah Pembayaran</a>
@@ -59,7 +63,7 @@
                                             @endforeach
                                         </tbody>
                                     </table>
-                                    <div class="alert alert-success mt-2">
+                                    <div class="alert alert-info mt-2">
                                         <strong>Total:</strong> Rp{{ number_format($reservation->room->price * $reservation->duration, 0, ',', '.') }} <br>
                                         <strong>Dibayar:</strong> Rp{{ number_format($reservation->total_paid, 0, ',', '.') }}<br>
                                         <strong>Sisa:</strong> Rp{{ number_format(($reservation->room->price * $reservation->duration) - $reservation->total_paid, 0, ',', '.') }}

@@ -61,11 +61,30 @@
                                                 <label for="check_out_date" class="form-label">Tgl. Check-Out</label>
                                                 <input type="text" id="check_out_date" name="check_out_date" data-target="#checkOutDate" data-toggle="datetimepicker" class="form-control datetimepicker-input" placeholder="Contoh: 2025-05-14">
                                             </div>
+
+                                            <div class="mb-2">
+                                                <label for="notes" class="form-label">Catatan  (optional)</label>
+                                                <textarea name="notes" id="notes" class="form-control" rows="3" placeholder="Masukkan catatan jika perlu"></textarea>
+                                            </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="mb-2">
-                                                <label for="notes" class="form-label">Catatan</label>
-                                                <textarea name="notes" id="notes" class="form-control" rows="3" placeholder="Masukkan catatan jika perlu (optional)"></textarea>
+                                                <label for="total_amount" class="form-label">Total Harga</label>
+                                                <input type="number" name="total_amount" id="total_amount" class="form-control" placeholder="Contoh : 100000" min="5">
+                                            </div>
+
+                                            <div class="mb-2">
+                                                <label for="payment_method" class="form-label">Metode Bayar</label>
+                                                <select class="form-control" name="payment_method" id="payment_method">
+                                                    <option value="">-- Select metode pembayaran --</option>
+                                                    <option value="cash">Cash</option>
+                                                    <option value="transfer">Transfer</option>
+                                                </select>
+                                            </div>
+                                        
+                                            <div class="mb-2">
+                                                <label for="notes_down_payment" class="form-label">Catatan Pembayaran (optional)</label>
+                                                <textarea name="notes_down_payment" id="notes_down_payment" class="form-control" rows="3" placeholder="Masukkan catatan pembayaran jika perlu"></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -207,6 +226,13 @@
                             $('#check_out_date').addClass('is-invalid').after(`<div class="invalid-feedback">${errors.check_out_date}</div>`);
                         }
 
+                        if (errors.total_amount) {
+                            $('#total_amount').addClass('is-invalid').after(`<div class="invalid-feedback">${errors.total_amount}</div>`);
+                        }
+
+                        if (errors.payment_method) {
+                            $('#payment_method').addClass('is-invalid').after(`<div class="invalid-feedback">${errors.payment_method}</div>`);
+                        }
                     } else {
                         Swal.fire({
                             icon: 'error',

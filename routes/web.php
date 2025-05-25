@@ -9,6 +9,7 @@ use App\Http\Controllers\RoomController;
 use App\Http\Controllers\GuestController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\CheckinController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
 
@@ -78,12 +79,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('reservasi/show/{id}', [ReservationController::class, 'show'])->name('reservation.show');
     Route::put('reservasi/{id}', [ReservationController::class, 'update'])->name('reservation.update');
     Route::put('reservasi/confirm/{id}', [ReservationController::class, 'confirm'])->name('reservation.confirm');
-    Route::get('reservasi/check-in/{id}', [ReservationController::class, 'checkIn'])->name('reservation.checkIn');
-    Route::put('reservasi/check-in/{id}', [ReservationController::class, 'checkInProcess'])->name('reservation.checkInProcess');
     Route::put('reservasi/check-out/{id}', [ReservationController::class, 'checkOut'])->name('reservation.checkOut');
     Route::put('reservasi/cancel/{id}', [ReservationController::class, 'cancel'])->name('reservation.cancel');
-    Route::get('reservasi/checkin-langsung', [ReservationController::class, 'createDirectCheckin'])->name('reservation.direct.create');
-    Route::post('reservasi/checkin-langsung', [ReservationController::class, 'storeDirectCheckin'])->name('reservation.direct.store');
+    
+    // Checking lansung
+    Route::get('reservasi/check-in/{id}', [CheckinController::class, 'checkIn'])->name('reservation.checkIn');
+    Route::put('reservasi/check-in/{id}', [CheckinController::class, 'checkInProcess'])->name('reservation.checkInProcess');
+    Route::get('reservasi/checkin-langsung', [CheckinController::class, 'createDirectCheckin'])->name('reservation.direct.create');
+    Route::post('reservasi/checkin-langsung', [CheckinController::class, 'storeDirectCheckin'])->name('reservation.direct.store');
     
     // Pembayaran
     Route::get('reservasi/pembayaran/tambah/{reservation_id}', [PaymentController::class, 'create'])->name('reservation.payment.create');
