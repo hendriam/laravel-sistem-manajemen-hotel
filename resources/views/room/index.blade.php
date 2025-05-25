@@ -186,7 +186,7 @@
                 {
                     data: null,
                     render : function(data, type, row){
-                        return  '<a href="{{ route("room.index") }}/edit/'+data.id+'" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i> Edit</a> &nbsp';
+                        return  '<a href="{{ route("room.index") }}/edit/'+data.id+'" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i> Edit</a> ';
                         // '<button type="button" class="btn btn-sm btn-danger btn-delete" data-id="'+data.id+'"><i class="fas fa-trash"></i> Hapus</button> &nbsp';
                     },
                     orderable: false,

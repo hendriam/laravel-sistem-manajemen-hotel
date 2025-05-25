@@ -194,22 +194,22 @@
                     render : function(data, type, row){
                         switch (data.status) {
                             case 'pending':
-                                return  '<a href="{{ route("reservation.index") }}/edit/'+data.id+'" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i> Edit</a> &nbsp'+
-                                '<button type="button" class="btn btn-sm btn-success btn-confirm" data-id="'+data.id+'"><i class="fas fa-check"></i> Confirm</button> &nbsp' +
-                                '<a href="{{ route("reservation.index") }}/show/'+data.id+'" class="btn btn-sm btn-info"><i class="fas fa-wallet"></i> Bayar</a> &nbsp'+
-                                '<button type="button" class="btn btn-sm btn-danger btn-cancel" data-id="'+data.id+'"><i class="fas fa-window-close"></i> Batal</button> &nbsp';
+                                return  '<a href="{{ route("reservation.index") }}/edit/'+data.id+'" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i> Edit</a> '+
+                                '<button type="button" class="btn btn-sm btn-success btn-confirm" data-id="'+data.id+'"><i class="fas fa-check"></i> Confirm</button> ' +
+                                '<a href="{{ route("reservation.index") }}/show/'+data.id+'" class="btn btn-sm btn-info"><i class="fas fa-wallet"></i> Bayar</a> '+
+                                '<button type="button" class="btn btn-sm btn-danger btn-cancel" data-id="'+data.id+'"><i class="fas fa-window-close"></i> Batal</button> ';
                                 break;
                             case 'confirmed':
-                                return  '<a href="{{ route("reservation.index") }}/edit/'+data.id+'" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i> Edit</a> &nbsp'+
-                                // '<button type="button" class="btn btn-sm btn-success btn-checkin" data-id="'+data.id+'"><i class="fas fa-check"></i> Check-in</button> &nbsp' +
-                                '<a href="{{ route("reservation.index") }}/check-in/'+data.id+'" class="btn btn-sm btn-success"><i class="fas fa-check"></i> Check-in</a> &nbsp'+
-                                '<a href="{{ route("reservation.index") }}/show/'+data.id+'" class="btn btn-sm btn-info"><i class="fas fa-eye"></i> Detail</a> &nbsp'+
-                                '<button type="button" class="btn btn-sm btn-danger btn-cancel" data-id="'+data.id+'"><i class="fas fa-window-close"></i> Batal</button> &nbsp';
+                                return  '<a href="{{ route("reservation.index") }}/edit/'+data.id+'" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i> Edit</a> '+
+                                // '<button type="button" class="btn btn-sm btn-success btn-checkin" data-id="'+data.id+'"><i class="fas fa-check"></i> Check-in</button> ' +
+                                '<a href="{{ route("reservation.index") }}/check-in/'+data.id+'" class="btn btn-sm btn-success"><i class="fas fa-check"></i> Check-in</a> '+
+                                '<a href="{{ route("reservation.index") }}/show/'+data.id+'" class="btn btn-sm btn-info"><i class="fas fa-eye"></i> Detail</a> '+
+                                '<button type="button" class="btn btn-sm btn-danger btn-cancel" data-id="'+data.id+'"><i class="fas fa-window-close"></i> Batal</button> ';
                                 break;
                             case 'checked_in':
-                                return  '<a href="{{ route("reservation.index") }}/edit/'+data.id+'" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i> Edit</a> &nbsp'+
-                                '<button type="button" class="btn btn-sm btn-success btn-dark" data-id="'+data.id+'"><i class="fas fa-check"></i> Check-out</button> &nbsp'+
-                                '<a href="{{ route("reservation.index") }}/show/'+data.id+'" class="btn btn-sm btn-info"><i class="fas fa-eye"></i> Detail</a> &nbsp';
+                                return  '<a href="{{ route("reservation.index") }}/edit/'+data.id+'" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i> Edit</a> '+
+                                '<button type="button" class="btn btn-sm btn-success btn-dark" data-id="'+data.id+'"><i class="fas fa-check"></i> Check-out</button> '+
+                                '<a href="{{ route("reservation.index") }}/show/'+data.id+'" class="btn btn-sm btn-info"><i class="fas fa-eye"></i> Detail</a> ';
                                 break;
                             default:
                                 return 'Selesai';

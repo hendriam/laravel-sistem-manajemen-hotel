@@ -6,6 +6,11 @@
     <link rel="stylesheet" href="{{ asset('assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css')}}">
     <link rel="stylesheet" href="{{ asset('assets/plugins/datatables-buttons/css/buttons.bootstrap4.min.css')}}">
     <link rel="stylesheet" href="{{ asset('assets/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css')}}">
+    <style>
+        td.dt-center{
+            text-align: center;
+        }
+    </style>
 @endsection
 
 <!-- Content Header (Page header) -->
@@ -139,13 +144,16 @@
                     {
                         data: null,
                         render : function(data, type, row){
-                            return  '<a href="{{ route("user.index") }}/edit/'+data.id+'" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i> Edit</a> &nbsp' +
-                            '<button type="button" class="btn btn-sm btn-danger btn-delete" data-id="'+data.id+'"><i class="fas fa-trash"></i> Hapus</button> &nbsp';
+                            return  '<a href="{{ route("user.index") }}/edit/'+data.id+'" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i> Edit</a> ' +
+                            '<button type="button" class="btn btn-sm btn-danger btn-delete" data-id="'+data.id+'"><i class="fas fa-trash"></i> Hapus</button> ';
                         },
                         orderable: false,
                     }
                 ],
                 order: [ 4, 'desc' ],
+                columnDefs: [
+                    {targets: [5], className: 'dt-center'}
+                ],
             });
 
             $('#data_table').on('click', '.btn-delete', function () {
