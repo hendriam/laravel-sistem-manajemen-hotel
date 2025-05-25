@@ -39,7 +39,8 @@
                                 <div class="card-header">
                                     <h5 class="card-title">Form Checkin Lansung</h5>
                                     <div class="card-tools">
-                                        <a href="{{ route('guest.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Tambahkan Tamu</a>
+                                        <button type="button" id="btnCreateGuest" class="btn btn-primary"><i class="fas fa-plus"></i> Tambah Tamu</button>
+                                        <!-- <a href="{{ route('guest.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Tambahkan Tamu</a> -->
                                         <a href="{{ route('reservation.index') }}" class="btn btn-warning"><i class="fas fa-arrow-left"></i> Kembali</a>
                                     </div>
                                 </div>
@@ -80,6 +81,13 @@
                 <!-- /.row -->
             </div><!-- /.container-fluid -->
         </section>
+
+        <!-- Modal Create Tamu -->
+        <div class="modal fade" id="modalCreateGuest" tabindex="-1" aria-labelledby="modalCreateGuestLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                @include('reservation.form_create_tamu')
+            </div>
+        </div>
     </div>
 @endsection
 <!-- /.content -->
@@ -212,5 +220,85 @@
             });
         });
 
+        // create btn new guest
+        $('#btnCreateGuest').click(function () {
+            $('#formCreateGuest')[0].reset();
+            $('#formCreateGuest .modal-title').text("Tambah Tamu");
+            
+            // Hapus pesan error sebelumnya
+            $('#formCreateGuest .is-invalid').removeClass('is-invalid');
+            $('#formCreateGuest .invalid-feedback').remove();
+
+            $('#formCreateGuest .fa-spinner').hide();
+            $('#formCreateGuest .fa-save').show();
+
+            $('#formCreateGuest input[name="_method"]').remove();
+
+            $('#modalCreateGuest').modal('show');
+        });
+
+        // form create new guest
+        $('#formCreateGuest').on('submit', function (e) {
+            e.preventDefault();
+            
+            // Hapus pesan error sebelumnya
+            $('#formCreateGuest .is-invalid').removeClass('is-invalid');
+            $('#formCreateGuest .invalid-feedback').remove();
+
+            $('#formCreateGuest .fa-spinner').show();
+            $('#formCreateGuest .fa-save').hide();
+
+            const route = $('#formCreateGuest').attr('action');
+            const formData = $("#formCreateGuest").serialize();
+           
+            $.ajax({
+                url: route,
+                method: 'POST',
+                headers: {'X-CSRF-TOKEN': '{{ csrf_token() }}'},
+                data: formData,
+                success: function (res) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: res.message,
+                    })
+                    $('#modalCreateGuest').modal('hide');
+                },
+                error: function (xhr) {
+                    if (xhr.status === 422) {
+                        const errors = xhr.responseJSON.errors;
+
+                        if (errors.name) {
+                            $('#name').addClass('is-invalid').after(`<div class="invalid-feedback">${errors.name}</div>`);
+                        }
+
+                        if (errors.identity_type) {
+                            $('#identity_type').addClass('is-invalid').after(`<div class="invalid-feedback">${errors.identity_type}</div>`);
+                        }
+
+                        if (errors.identity_number) {
+                            $('#identity_number').addClass('is-invalid').after(`<div class="invalid-feedback">${errors.identity_number}</div>`);
+                        }
+
+                        if (errors.phone) {
+                            $('#phone').addClass('is-invalid').after(`<div class="invalid-feedback">${errors.phone}</div>`);
+                        }
+
+                        if (errors.address) {
+                            $('#address').addClass('is-invalid').after(`<div class="invalid-feedback">${errors.address}</div>`);
+                        }
+
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal!',
+                            text: xhr.responseJSON.message,
+                        });
+                    }
+                    $('#formCreateGuest .fa-spinner').hide();
+                    $('#formCreateGuest .fa-save').show();
+                }
+            });
+        });
     </script>
 @endsection

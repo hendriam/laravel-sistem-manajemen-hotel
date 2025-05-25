@@ -27,13 +27,13 @@
 	</div>
 	<div class="col-md-6">
 		<div class="mb-2">
-			<label for="email" class="form-label">Email (optioanal)</label>
+			<label for="email" class="form-label">Email (optional)</label>
 			<input type="number" name="email" id="email" class="form-control" value="{{ $data->email ?? '' }}" placeholder="Contoh: example@gmail.com">
 		</div>
 
 		<div class="mb-2">
 			<label for="address" class="form-label">Alamat</label>
-			<textarea name="address" id="address" class="form-control" rows="3" placeholder="Contoh: Kamar 1 sedang diperbaiki">{{ $data->address ?? '' }}</textarea>
+			<textarea name="address" id="address" class="form-control" rows="3" placeholder="Contoh: Jl. Bambu no. 30">{{ $data->address ?? '' }}</textarea>
 		</div>
 	</div>
 </div>
