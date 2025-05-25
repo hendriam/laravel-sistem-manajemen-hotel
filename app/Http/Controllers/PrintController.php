@@ -17,8 +17,6 @@ class PrintController extends Controller
         $reservation->duration = $checkIn->diffInDays($checkOut);
         $reservation->total_paid = $reservation->payments->sum('amount');
 
-        // dd($reservation);
-
         $print = $this->printInvoice($reservation);
 
         return view('print.invoice',[
