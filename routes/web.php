@@ -62,6 +62,7 @@ Route::middleware(['auth'])->group(function () {
         Route::put('kamar/{id}', [RoomController::class, 'update'])->name('room.update');
         Route::delete('kamar/{id}', [RoomController::class, 'destroy'])->name('room.destroy');
         Route::get('kamar/search', [RoomController::class, 'search'])->name('room.search');
+        Route::get('kamar/json/{id}', [RoomController::class, 'getJson'])->name('room.getJson');
     });
 
     // Master buku tamu

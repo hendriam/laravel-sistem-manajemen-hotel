@@ -104,7 +104,7 @@ class CheckinController extends Controller
     public function createDirectCheckin()
     {
         return view('reservation.direct_checkin',[
-            'title' => 'Buat Check-in Lansung'
+            'title' => 'Check-in Lansung'
         ]);
     }
 

@@ -7,6 +7,7 @@ use App\Models\Reservation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Support\Facades\DB;
 
 class PaymentController extends Controller
 {
@@ -35,6 +36,8 @@ class PaymentController extends Controller
             'notes' => 'nullable|string',
         ]);
 
+        DB::beginTransaction();
+
         try {
             $reservation = Reservation::findOrFail($reservation_id);
 
@@ -47,14 +50,23 @@ class PaymentController extends Controller
                 'created_by' => Auth::id(),
             ]);
 
+            $reservation->update([
+                'status' => 'confirmed',
+                'updated_by' => Auth::id()
+            ]);
+
+            DB::commit();
+
             return response()->json([
                 'success' => true,
                 'message' => 'Data berhasil ditambahkan.',
                 'redirect' => route('reservation.show', $reservation->id)
             ], 201);
         } catch (HttpResponseException $e) {
+            DB::rollBack();
             throw $e;
         } catch (\Throwable $th) {
+            DB::rollBack();
             return response()->json([
                 'success' => false,
                 'message' => $th->getMessage(),

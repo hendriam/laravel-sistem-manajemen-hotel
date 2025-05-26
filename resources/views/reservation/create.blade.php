@@ -15,7 +15,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0">{{ $title }}</h1>
+                        <h1 class="m-0">Buat {{ $title }}</h1>
                     </div><!-- /.col -->
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
@@ -74,16 +74,8 @@
     <script src="{{ asset('assets/plugins/moment/moment.min.js')}}"></script>
     <script src="{{ asset('assets/plugins/daterangepicker/daterangepicker.js')}}"></script>
     <script src="{{ asset('assets/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js')}}"></script>
+    <script src="{{ asset('assets/dist/js/jquery.maskMoney.min.js') }}"></script>
     <script>
-        //Date picker check_in_date
-        $('#check_in_date').datetimepicker({
-            format: 'YYYY-MM-DD'
-        });
-
-        //Date picker check_out_date
-        $('#check_out_date').datetimepicker({
-            format: 'YYYY-MM-DD'
-        });
 
         //Initialize Select2 Elements
         $('.select2bs44').select2({
@@ -142,7 +134,100 @@
                 cache: true
             }
         })
+
+        // Tangkap perubahan pada Select2
+        $('#room_id').on('change', function() {
+            var id = $(this).val();
+            $.ajax({
+                url: '{{ route("room.index") }}/json/'+id,
+                type: 'GET',
+                dataType: "json",
+                success: function (res) {
+                    const number = 400000;
+                    const formatter =new Intl.NumberFormat('id-ID', {
+                        style: 'currency',
+                        currency: 'IDR',
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 0 
+                    })
+
+                    var totalPrice = res.room.price * parseInt($('#number_of_days').val());
+                    var roomPrice = res.room.price;
+
+                    $('#total_price').val(formatter.format(totalPrice));
+                    $('#room_price').val(formatter.format(roomPrice));
+                },
+                error: function (xhr) {
+                }
+            });
+        });
         
+        //Date picker check_in_date
+        $('#check_in_date').datetimepicker({
+            format: 'YYYY-MM-DD',
+            defaultDate: moment().format('YYYY-MM-DD'),
+        });
+
+        //Date picker check_out_date
+        $('#check_out_date').datetimepicker({
+            format: 'YYYY-MM-DD'
+        });
+
+        // $('#check_in_date').click(function () {
+        //     $('#room_id').val("");
+        //     $('#room_id').text("");
+        //     $('#number_of_days').val(1);
+        //     $('#room_price').val(0);
+        //     $('#total_price').val(0);
+        // })
+
+        $('#check_out_date').click(function () {
+            $('#room_id').val("");
+            $('#room_id').text("");
+            $('#room_price').val(0);
+            $('#total_price').val(0);
+        })
+
+        // Mengambil nilai saat ada perubahan
+        $('#check_out_date').on('change.datetimepicker', function (e) {
+            var checkInDate = moment($('#check_in_date').val());
+            var checkOutDate = moment($(this).val());
+            var jumlahHari = checkOutDate.diff(checkInDate, 'days');
+            $('#number_of_days').val(jumlahHari)
+        });
+
+        $("#room_price").maskMoney({
+            prefix: 'Rp ',
+            allowNegative: false,
+            thousands: '.',
+            decimal: ',',
+            affixesStay: true,
+            precision: 0
+        });
+
+        $("#total_price").maskMoney({
+            prefix: 'Rp ',
+            allowNegative: false,
+            thousands: '.',
+            decimal: ',',
+            affixesStay: true,
+            precision: 0
+        });
+        
+        $("#mask_down_payment").maskMoney({
+            prefix: 'Rp ',
+            allowNegative: false,
+            thousands: '.',
+            decimal: ',',
+            affixesStay: true,
+            precision: 0
+        });
+
+        $("#mask_down_payment").keyup(function () {
+            var jumlah_bayar = $("#mask_down_payment").val().replace(/[^0-9-]+/g, '');
+            $('#down_payment').val(jumlah_bayar)
+        });
+
         $('#formStore').on('submit', function (e) {
             e.preventDefault();
             
@@ -193,7 +278,8 @@
                         }
 
                         if (errors.down_payment) {
-                            $('#down_payment').addClass('is-invalid').after(`<div class="invalid-feedback">${errors.down_payment}</div>`);
+                            // $('#down_payment').addClass('is-invalid').after(`<div class="invalid-feedback">${errors.down_payment}</div>`);
+                            $('#mask_down_payment').addClass('is-invalid').after(`<div class="invalid-feedback">${errors.down_payment}</div>`);
                         }
 
                         if (errors.down_payment_method) {

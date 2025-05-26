@@ -169,4 +169,13 @@ class RoomController extends Controller
                 ];
             });
     }
+
+    public function getJson(string $id)
+    {
+        $data = Room::findOrFail($id);
+         return response()->json([
+            'success' => true,
+            'room' => $data,
+        ], 200);
+    }
 }

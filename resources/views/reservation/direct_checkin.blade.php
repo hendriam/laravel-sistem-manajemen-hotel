@@ -51,14 +51,17 @@
                                                 <select class="form-control select2bs44" name="guest_id" id="guest_id"></select>
                                             </div>
 
-                                            <div class="mb-2" id="floor">
-                                                <label for="room_id" class="form-label">Kamar</label>
-                                                <select class="form-control select2bs4" name="room_id" id="room_id"></select>
-                                            </div>
+                                    		<input type="hidden" id="check_in_date" name="check_in_date" value="{{ date('Y-m-d') }}">
 
+                                            
                                             <div class="mb-2">
                                                 <label for="check_out_date" class="form-label">Tgl. Check-Out</label>
                                                 <input type="text" id="check_out_date" name="check_out_date" data-target="#checkOutDate" data-toggle="datetimepicker" class="form-control datetimepicker-input" placeholder="Contoh: 2025-05-14">
+                                            </div>
+                                            
+                                            <div class="mb-2" id="floor">
+                                                <label for="room_id" class="form-label">Kamar</label>
+                                                <select class="form-control select2bs4" name="room_id" id="room_id"></select>
                                             </div>
 
                                             <div class="mb-2">
@@ -67,9 +70,21 @@
                                             </div>
                                         </div>
                                         <div class="col-md-6">
+
+                                            <div class="mb-2">
+                                                <label for="number_of_days" class="form-label">Jumlah Hari</label>
+                                                <input type="text" name="number_of_days" id="number_of_days" class="form-control" value="1" readonly>
+                                            </div>
+
+                                            <div class="mb-2">
+                                                <label for="room_price" class="form-label">Harga Kamar</label>
+                                                <input type="text" name="room_price" id="room_price" class="form-control" value="0" readonly>
+                                            </div>
+                                            
                                             <div class="mb-2">
                                                 <label for="total_amount" class="form-label">Total Harga</label>
-                                                <input type="number" name="total_amount" id="total_amount" class="form-control" placeholder="Contoh : 100000" min="5">
+				                                <input type="text" name="total_price" id="total_price" class="form-control" value="0" readonly>
+                                                <input type="hidden" name="total_amount" id="total_amount" class="form-control" placeholder="Contoh : 100000" min="5" readonly>
                                             </div>
 
                                             <div class="mb-2">
@@ -120,6 +135,21 @@
         //Date picker check_out_date
         $('#check_out_date').datetimepicker({
             format: 'YYYY-MM-DD'
+        });
+
+        $('#check_out_date').click(function () {
+            $('#room_id').val("");
+            $('#room_id').text("");
+            $('#room_price').val(0);
+            $('#total_price').val(0);
+        })
+
+        // Mengambil nilai saat ada perubahan
+        $('#check_out_date').on('change.datetimepicker', function (e) {
+            var checkInDate = moment($('#check_in_date').val());
+            var checkOutDate = moment($(this).val());
+            var jumlahHari = checkOutDate.diff(checkInDate, 'days');
+            $('#number_of_days').val(jumlahHari)
         });
 
         //Initialize Select2 Elements
@@ -179,6 +209,37 @@
                 cache: true
             }
         })
+
+        // Tangkap perubahan pada Select2
+        $('#room_id').on('change', function() {
+            var id = $(this).val();
+            $.ajax({
+                url: '{{ route("room.index") }}/json/'+id,
+                type: 'GET',
+                dataType: "json",
+                success: function (res) {
+                    const number = 400000;
+                    const formatter =new Intl.NumberFormat('id-ID', {
+                        style: 'currency',
+                        currency: 'IDR',
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 0 
+                    })
+
+                    var totalPrice = res.room.price * parseInt($('#number_of_days').val());
+                    var roomPrice = res.room.price;
+
+                    console.log(totalPrice);
+                    
+
+                    $('#total_price').val(formatter.format(totalPrice));
+                    $('#total_amount').val(totalPrice);
+                    $('#room_price').val(formatter.format(roomPrice));
+                },
+                error: function (xhr) {
+                }
+            });
+        });
         
         $('#formStore').on('submit', function (e) {
             e.preventDefault();
@@ -241,7 +302,7 @@
                         }
 
                         if (errors.total_amount) {
-                            $('#total_amount').addClass('is-invalid').after(`<div class="invalid-feedback">${errors.total_amount}</div>`);
+                            $('#total_price').addClass('is-invalid').after(`<div class="invalid-feedback">${errors.total_amount}</div>`);
                         }
 
                         if (errors.payment_method) {

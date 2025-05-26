@@ -27,16 +27,16 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header">
-                                <h5 class="card-title">Detail Reservasi {{ $reservation->id }}
-                                    @if($reservation->total_paid >= $reservation->room->price * $reservation->duration) 
-                                        <span class="badge badge-success">Sudah Lunas</span><br>
+                                <h5 class="card-title"><strong>Reservasi atas nama : {{ $reservation->guest->name }} | {{ $reservation->guest->identity_type }} : {{ $reservation->guest->identity_number }} </strong>
+                                    @if($reservation->status == 'pending')
+                                        <span class="badge badge-secondary">Belum Bayar DP</span>
                                     @endif
                                 </h5>
                                 <div class="card-tools">
                                     @if($reservation->total_paid < $reservation->room->price * $reservation->duration)
                                         <a href="{{ route('reservation.payment.create', $reservation->id) }}" class="btn btn-primary"><i class="fas fa-plus"></i> Tambah Pembayaran</a>
                                     @endif
-                                    <button type="button" id="btnPrint" data-id="{{ $reservation->id }}" class="btn btn-dark"><i class="fas fa-print"></i><i class='fas fa-spinner fa-spin' style="display: none"></i> Cetak</button>
+                                    <!-- <button type="button" id="btnPrint" data-id="{{ $reservation->id }}" class="btn btn-dark"><i class="fas fa-print"></i><i class='fas fa-spinner fa-spin' style="display: none"></i> Cetak</button> -->
                                     <a href="{{ route('reservation.index') }}" class="btn btn-warning"><i class="fas fa-arrow-left"></i> Kembali</a>
                                 </div>
                             </div>

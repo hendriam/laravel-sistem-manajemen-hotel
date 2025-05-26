@@ -11,6 +11,19 @@
 			</select>
 		</div>
 
+		<!-- <div class="mb-2">
+			<label for="check_in_date" class="form-label">Tgl. Check-In</label>
+			<input type="text" id="check_in_date" name="check_in_date" value="{{ $data->check_in_date ?? '' }}" data-target="#checkInDate" data-toggle="datetimepicker" class="form-control datetimepicker-input" placeholder="Contoh: 2025-05-14">
+		</div> -->
+		<!-- checkin default per tanggal hari ini -->
+		<input type="hidden" id="check_in_date" name="check_in_date" value="{{ $data->check_in_date ?? '' }}" data-target="#checkInDate" data-toggle="datetimepicker" class="form-control datetimepicker-input" placeholder="Contoh: 2025-05-14">
+
+
+		<div class="mb-2">
+			<label for="check_out_date" class="form-label">Tgl. Check-Out</label>
+			<input type="text" id="check_out_date" name="check_out_date" value="{{ $data->check_out_date ?? '' }}" data-target="#checkOutDate" data-toggle="datetimepicker" class="form-control datetimepicker-input" placeholder="Contoh: 2025-05-14">
+		</div>
+
 		<div class="mb-2" id="floor">
 			<label for="room_id" class="form-label">Kamar</label>
 			<select class="form-control select2bs4" name="room_id" id="room_id">
@@ -22,17 +35,12 @@
 			</select>
 		</div>
 
-		<div class="mb-2">
-			<label for="check_in_date" class="form-label">Tgl. Check-In</label>
-			<input type="text" id="check_in_date" name="check_in_date" value="{{ $data->check_in_date ?? '' }}" data-target="#checkInDate" data-toggle="datetimepicker" class="form-control datetimepicker-input" placeholder="Contoh: 2025-05-14">
-		</div>
-
-		<div class="mb-2">
-			<label for="check_out_date" class="form-label">Tgl. Check-Out</label>
-			<input type="text" id="check_out_date" name="check_out_date" value="{{ $data->check_out_date ?? '' }}" data-target="#checkOutDate" data-toggle="datetimepicker" class="form-control datetimepicker-input" placeholder="Contoh: 2025-05-14">
-		</div>
-
 		@if($isCreate)
+			<div class="mb-2">
+				<label for="number_of_days" class="form-label">Jumlah Hari</label>
+				<input type="text" name="number_of_days" id="number_of_days" class="form-control" value="1" readonly>
+			</div>
+
 			<div class="mb-2">
 				<label for="notes" class="form-label">Catatan Reservasi  (optional)</label>
 				<textarea name="notes" id="notes" class="form-control" rows="3" placeholder="Masukkan catatan reservasi jika perlu">{{ $data->notes ?? '' }}</textarea>
@@ -42,9 +50,21 @@
 	</div>
 	<div class="col-md-6">
 		@if($isCreate)
+			
 			<div class="mb-2">
-				<label for="down_payment" class="form-label">DP / Uang Muka (Rp)</label>
-				<input type="number" name="down_payment" id="down_payment" class="form-control" placeholder="Contoh : 100000" min="5">
+				<label for="room_price" class="form-label">Harga Kamar</label>
+				<input type="text" name="room_price" id="room_price" class="form-control" value="0" readonly>
+			</div>
+
+			<div class="mb-2">
+				<label for="total_price" class="form-label">Total</label>
+				<input type="text" name="total_price" id="total_price" class="form-control" value="0" readonly>
+			</div>
+
+			<div class="mb-2">
+				<label for="down_payment" class="form-label">DP / Uang Muka (Rp) <span style="font-size: 11px; color:maroon;">minimal 25% dari total</span></label>
+				<input type="text" name="mask_down_payment" id="mask_down_payment" class="form-control" placeholder="Contoh : 100000" min="5">
+				<input type="hidden" name="down_payment" id="down_payment" class="form-control">
 			</div>
 
 			<div class="mb-2">

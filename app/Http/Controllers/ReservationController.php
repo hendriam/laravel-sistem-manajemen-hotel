@@ -78,7 +78,7 @@ class ReservationController extends Controller
         $request->validate([
             'guest_id' => 'required|exists:guests,id',
             'room_id' => 'required|exists:rooms,id',
-            'check_in_date' => 'required|date',
+            'check_in_date' => 'required|date|after_or_equal:today',
             'check_out_date' => 'required|date|after:check_in_date',
             'notes' => 'nullable|string',
             'down_payment' => 'required|numeric|min:5',
@@ -104,29 +104,26 @@ class ReservationController extends Controller
         try {
             $reservation = Reservation::create($request->all() + ['created_by' => Auth::id()]);
 
-            // Jika ada DP, simpan ke payments
-            if ($request->filled('down_payment') && $request->down_payment > 0) {
+            $checkIn = \Carbon\Carbon::parse($reservation->check_in_date);
+            $checkOut = \Carbon\Carbon::parse($reservation->check_out_date);
+            $duration = $checkIn->diffInDays($checkOut);
+            $totalRoomPrices = $reservation->room->price * $duration;
 
-                if(!$this->checkDpAmout($reservation->room->price, $request->down_payment)) {
-                    throw new HttpResponseException(response()->json([
-                        'success' => false,
-                        'message' => 'Jumlah DP harus minimal 25% dari total biaya.',
-                    ], 400));
-                }
-
-                Payment::create([
-                    'reservation_id' => $reservation->id,
-                    'amount' => $request->down_payment,
-                    'payment_date' => now(),
-                    'method' => $request->down_payment_method,
-                    'notes' => $request->notes_down_payment,
-                    'created_by' => Auth::id(),
-                ]);
-
-                // Ubah status ke confirmed jika DP masuk
-                // $reservation->update(['status' => 'confirmed']);
-                
+            if(!$this->checkDpAmout($totalRoomPrices, $request->down_payment)) {
+                throw new HttpResponseException(response()->json([
+                    'success' => false,
+                    'message' => 'Jumlah DP harus minimal 25% dari total biaya.',
+                ], 400));
             }
+
+            Payment::create([
+                'reservation_id' => $reservation->id,
+                'amount' => $request->down_payment,
+                'payment_date' => now(),
+                'method' => $request->down_payment_method,
+                'notes' => $request->notes_down_payment,
+                'created_by' => Auth::id(),
+            ]);
 
             DB::commit();
 
