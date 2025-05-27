@@ -74,8 +74,6 @@
                                         </div>
                                         <div class="col-md-6 d-flex align-items-end">
                                             <button type="submit" class="btn btn-primary me-2">Filter</button> &nbsp
-                                            <button type="button" class="btn btn-success" id="btn-export-excel">Export Excel</button> &nbsp
-                                            <button type="button" class="btn btn-info" id="btn-export-pdf">Export PDF</button> &nbsp
                                             <button type="button" class="btn btn-secondary" id="reset-filters">Reset</button>
                                         </div>
                                     </div>
@@ -143,7 +141,7 @@
             },
             language: {
                 emptyTable: 'Tidak Ada Data Tersedia',
-                search: "Cari:",
+                search: "Cari nama tamu:",
                 lengthMenu: "Tampilkan _MENU_ data",
                 info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
                 paginate: {
@@ -449,31 +447,6 @@
 		$('#reset-filters').on('click', function () {
 			$('#filter-form')[0].reset();
 			table.ajax.reload();
-		});
-
-		$('#btn-export-excel').on('click', function () {
-			let status = $('#filter-status').val();
-			let startDate = $('#filter-start-date').val();
-			let endDate = $('#filter-end-date').val();
-
-			let url = new URL("{{ route('report-reservation.export.excel') }}", window.location.origin);
-			url.searchParams.append("status", status);
-			url.searchParams.append("start_date", startDate);
-			url.searchParams.append("end_date", endDate);
-			window.location.href = url.toString();
-		});
-
-		$('#btn-export-pdf').on('click', function () {
-			let status = $('#filter-status').val();
-			let startDate = $('#filter-start-date').val();
-			let endDate = $('#filter-end-date').val();
-
-			let url = new URL("{{ route('report-reservation.export.pdf') }}", window.location.origin);
-			url.searchParams.append("status", status);
-			url.searchParams.append("start_date", startDate);
-			url.searchParams.append("end_date", endDate);
-
-			window.open(url.toString(), '_blank');
 		});
     </script>
 @endsection

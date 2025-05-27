@@ -60,7 +60,9 @@ class ReportReservationController extends Controller
             if (!empty($request->input('search.value'))) {
                 $search = $request->input('search.value');
                 $query->where(function($q) use ($search) {
-                    $q->where('name', 'like', "%{$search}%");
+                    $q->whereHas('guest', function ($guestQuery) use ($search) {
+                        $guestQuery->where('name', 'like', "%{$search}%");
+                    });
                 });
             }
 
