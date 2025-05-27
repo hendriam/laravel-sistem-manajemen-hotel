@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Laporan Peminjaman Buku</title>
+    <title>{{ $title }}</title>
     <style>
         table {
             width: 100%;
@@ -16,7 +16,7 @@
     </style>
 </head>
 <body>
-    <h3>Laporan Reservasi</h3>
+    <h3>{{ $title }}</h3>
     <table>
         <thead>
             <tr>

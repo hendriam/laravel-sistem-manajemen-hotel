@@ -27,6 +27,7 @@ class ReportReservationController extends Controller
                 'created_by.name',
                 'created_at' 
             ];
+
             $totalData = Reservation::count();
 
             $limit = $request->input('length');   // jumlah data per halaman
@@ -35,26 +36,7 @@ class ReportReservationController extends Controller
             $order = $columns[$request->input('order.0.column')];
             $dir = $request->input('order.0.dir');
 
-            $query = Reservation::with(['guest', 'room', 'createdBy', 'updatedby']);
-
-            // jika tidak ada filter tanggal, buat default pertanggal hari ini
-            $start_date = date('Y-m-d');
-            $end_date = date('Y-m-d');
-
-            // Filter tanggal check-in
-            if ($request->filled('start_date') && $request->filled('end_date')) {
-                $start_date = $request->start_date;
-                $end_date = $request->end_date;                
-            }
-
-            if ($request->status) {
-                $query->where('status', $request->status);
-            }
-
-            $query->whereBetween('check_in_date', [
-                $start_date,
-                $end_date
-            ]);
+            $query = $this->filteredReservations($request);
 
             // Search filter
             if (!empty($request->input('search.value'))) {
@@ -87,56 +69,66 @@ class ReportReservationController extends Controller
 
     public function exportExcel(Request $request)
     {
-        $start_date = date('Y-m-d');
-        $end_date = date('Y-m-d');
-
-        if ($request->start_date && $request->end_date) {
-            $start_date = $request->start_date;
-            $end_date = $request->end_date;     
-        }
-
-        $title = 'laporan_reservasi_' .$start_date. '_' .$end_date. '.xlsx';
-
-        return Excel::download(new ReservationsExport($request), $title);
+        $file = $this->fileAndTitle($request, 'xlsx')['file'];
+        return Excel::download(new ReservationsExport($request), $file);
     }
 
     
     public function exportPDF(Request $request)
     {
         $reservations = $this->filteredReservations($request)->get();
-        $pdf = Pdf::loadView('report.laporan_reservasi_pdf', compact('reservations'));
 
-        $start_date = date('Y-m-d');
-        $end_date = date('Y-m-d');
+        $fileAndTitle = $this->fileAndTitle($request, 'pdf');
 
-        if ($request->start_date && $request->end_date) {
-            $start_date = $request->start_date;
-            $end_date = $request->end_date;     
-        }
+        $pdf = Pdf::loadView('report.laporan_reservasi_pdf', compact('reservations'),[
+            'title' => $fileAndTitle['title']
+        ]);
 
-        $title = 'laporan_reservasi_' .$start_date. '_' .$end_date. '.pdf';
-
-        return $pdf->download($title);
+        return $pdf->download($fileAndTitle['file']);
     }
 
     private function filteredReservations(Request $request)
     {
         $query = Reservation::with(['guest', 'room','createdBy', 'updatedby']);
 
+        // jika tidak ada filter tanggal, buat default pertanggal hari ini
+        $start_date = date('Y-m-d');
+        $end_date = date('Y-m-d');
+
+        // Filter tanggal check-in
+        if ($request->filled('start_date') && $request->filled('end_date')) {
+            $start_date = $request->start_date;
+            $end_date = $request->end_date;                
+        }
+
         if ($request->status) {
             $query->where('status', $request->status);
         }
 
+        $query->whereBetween('check_in_date', [
+            $start_date,
+            $end_date
+        ]);
+
+        return $query;
+    }
+
+    public function fileAndTitle(Request $request , string $format = '')
+    {
         $start_date = date('Y-m-d');
         $end_date = date('Y-m-d');
 
-        if ($request->start_date && $request->end_date) {
+        if ($request->filled('start_date') && $request->filled('end_date')) {
             $start_date = $request->start_date;
-            $end_date = $request->end_date;     
+            $end_date = $request->end_date;                
         }
 
-        $query->whereBetween('check_in_date', [$start_date, $end_date]);
+        $file = 'laporan_reservasi_per_' .$start_date. '_' .$end_date. '.'.$format;
+        $title = 'Laporan Reservasi Per ' .$start_date. ' s.d ' .$end_date;
 
-        return $query;
+        return [
+            'file' => $file,
+            'title' => $title,
+        ];
     }
 }
