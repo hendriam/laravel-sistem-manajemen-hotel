@@ -99,7 +99,7 @@ Route::middleware(['auth'])->group(function () {
     // Invoice
     Route::get('reservasi/invoice/{id}', [PrintController::class, 'invoice'])->name('reservation.invoice');
 
-    // Laporan
+    // Laporan Reservasi
     Route::match(['get', 'post'], 'laporan-reservasi', [ReportReservationController::class, 'index'])->name('report-reservation.index');
     Route::get('laporan-reservasi/export/excel', [ReportReservationController::class, 'exportExcel'])->name('report-reservation.export.excel');
     Route::get('laporan-reservasi/export/pdf', [ReportReservationController::class, 'exportPDF'])->name('report-reservation.export.pdf');
