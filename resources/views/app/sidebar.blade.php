@@ -71,7 +71,11 @@
 						<i class="fas fa-sticky-note nav-icon"></i> <p>Laporan Reservasi</p>
 					</a>
 				</li>
-
+				<li class="nav-item">
+					<a href="{{ route('report-payment.index') }}" class="nav-link {{ request()->routeIs('report-payment.*') ? 'active' : '' }}">
+						<i class="fas fa-sticky-note nav-icon"></i> <p>Laporan Pembayaran</p>
+					</a>
+				</li>
 			</ul>
 		</nav>
 		<!-- /.sidebar-menu -->

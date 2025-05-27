@@ -14,6 +14,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PrintController;
 use App\Http\Controllers\ReportReservationController;
+use App\Http\Controllers\ReportPaymentController;
 
 Route::get('/', [AuthController::class, 'login'])->name('login');
 Route::post('/', [AuthController::class, 'authenticate']);
@@ -104,4 +105,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('laporan-reservasi/export/excel', [ReportReservationController::class, 'exportExcel'])->name('report-reservation.export.excel');
     Route::get('laporan-reservasi/export/pdf', [ReportReservationController::class, 'exportPDF'])->name('report-reservation.export.pdf');
 
+    // Laporan Pembayaran
+    Route::match(['get', 'post'], 'laporan-pembayaran', [ReportPaymentController::class, 'index'])->name('report-payment.index');
+    Route::get('laporan-pembayaran/export/excel', [ReportPaymentController::class, 'exportExcel'])->name('report-payment.export.excel');
+    Route::get('laporan-pembayaran/export/pdf', [ReportPaymentController::class, 'exportPDF'])->name('report-payment.export.pdf');
 });
