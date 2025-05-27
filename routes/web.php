@@ -43,7 +43,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('lantai/edit/{id}', [FloorController::class, 'edit'])->name('floor.edit');
         Route::put('lantai/{id}', [FloorController::class, 'update'])->name('floor.update');
         Route::delete('lantai/{id}', [FloorController::class, 'destroy'])->name('floor.destroy');
-        Route::get('buku/search', [FloorController::class, 'search'])->name('floor.search');
     
         // Master tipe kamar
         Route::match(['get', 'post'], 'tipe-kamar', [RoomTypeController::class, 'index'])->name('room-types.index');
@@ -52,7 +51,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('tipe-kamar/edit/{id}', [RoomTypeController::class, 'edit'])->name('room-types.edit');
         Route::put('tipe-kamar/{id}', [RoomTypeController::class, 'update'])->name('room-types.update');
         Route::delete('tipe-kamar/{id}', [RoomTypeController::class, 'destroy'])->name('room-types.destroy');
-        Route::get('tipe-kamar/search', [RoomTypeController::class, 'search'])->name('room-types.search');
     
         // Master Kamar
         Route::match(['get', 'post'], 'kamar', [RoomController::class, 'index'])->name('room.index');
@@ -61,9 +59,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('kamar/edit/{id}', [RoomController::class, 'edit'])->name('room.edit');
         Route::put('kamar/{id}', [RoomController::class, 'update'])->name('room.update');
         Route::delete('kamar/{id}', [RoomController::class, 'destroy'])->name('room.destroy');
-        Route::get('kamar/search', [RoomController::class, 'search'])->name('room.search');
-        Route::get('kamar/json/{id}', [RoomController::class, 'getJson'])->name('room.getJson');
     });
+    
+    Route::get('lantai/search', [FloorController::class, 'search'])->name('floor.search');
+    Route::get('tipe-kamar/search', [RoomTypeController::class, 'search'])->name('room-types.search');
+    Route::get('kamar/search', [RoomController::class, 'search'])->name('room.search');
+    Route::get('kamar/json/{id}', [RoomController::class, 'getJson'])->name('room.getJson');
 
     // Master buku tamu
     Route::match(['get', 'post'], 'tamu', [GuestController::class, 'index'])->name('guest.index');

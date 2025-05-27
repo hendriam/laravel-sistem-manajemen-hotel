@@ -169,7 +169,7 @@ class ReservationController extends Controller
 
     public function edit(string $id)
     {
-        $data = Reservation::findOrFail($id);
+        $data = Reservation::with(['guest', 'room', 'payments'])->findOrFail($id);
         return view('reservation.edit', compact('data'), [
             'title' => $this->title,
             'guests' => Guest::all(),

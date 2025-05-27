@@ -4,20 +4,13 @@
 			<label for="guest_id" class="form-label">Nama Tamu</label>
 			<select class="form-control select2bs44" name="guest_id" id="guest_id">
 				@if($guests)
-					@foreach ($guests as $guest)
-						<option value="{{ $guest->id }}" {{ ($data->guest_id ?? '') == $guest->id ? 'selected' : '' }}>{{ $guest->name }}</option>
-					@endforeach
+					<option value="{{ $data->guest_id }}" >{{ $data->guest->name }}</option>
 				@endif
 			</select>
 		</div>
 
-		<!-- <div class="mb-2">
-			<label for="check_in_date" class="form-label">Tgl. Check-In</label>
-			<input type="text" id="check_in_date" name="check_in_date" value="{{ $data->check_in_date ?? '' }}" data-target="#checkInDate" data-toggle="datetimepicker" class="form-control datetimepicker-input" placeholder="Contoh: 2025-05-14">
-		</div> -->
 		<!-- checkin default per tanggal hari ini -->
 		<input type="hidden" id="check_in_date" name="check_in_date" value="{{ $data->check_in_date ?? '' }}" data-target="#checkInDate" data-toggle="datetimepicker" class="form-control datetimepicker-input" placeholder="Contoh: 2025-05-14">
-
 
 		<div class="mb-2">
 			<label for="check_out_date" class="form-label">Tgl. Check-Out</label>
@@ -28,9 +21,7 @@
 			<label for="room_id" class="form-label">Kamar</label>
 			<select class="form-control select2bs4" name="room_id" id="room_id">
 				@if($rooms)
-					@foreach ($rooms as $room)
-						<option value="{{ $room->id }}" {{ ($data->room_id ?? '') == $room->id ? 'selected' : '' }}>{{ $room->room_number }}</option>
-					@endforeach
+					<option value="{{ $data->room_id }}">Kamar {{ $data->room->room_number }} ( {{ $data->room->roomType->name }} - {{ $data->room->floor->name }} ) </option>
 				@endif
 			</select>
 		</div>

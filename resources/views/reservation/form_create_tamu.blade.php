@@ -39,7 +39,7 @@
 
 						<div class="col-md-6">
 							<div class="mb-2">
-								<label for="email" class="form-label">Email (optianal)</label>
+								<label for="email" class="form-label">Email (optional)</label>
 								<input type="number" name="email" id="email" class="form-control" placeholder="Contoh: example@gmail.com">
 							</div>
 		

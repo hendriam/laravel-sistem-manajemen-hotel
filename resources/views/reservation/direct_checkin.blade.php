@@ -20,7 +20,7 @@
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{{ route('reservation.index') }}">{{ $title }}</a></li>
-                        <li class="breadcrumb-item active">Check-in Lansung</li>
+                        <li class="breadcrumb-item active">Tambah</li>
                         </ol>
                     </div><!-- /.col -->
                 </div><!-- /.row -->
