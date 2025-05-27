@@ -41,10 +41,14 @@ class ReportReservationController extends Controller
             $start_date = date('Y-m-d');
             $end_date = date('Y-m-d');
 
-            // Filter tanggal peminjaman
+            // Filter tanggal check-in
             if ($request->filled('start_date') && $request->filled('end_date')) {
                 $start_date = $request->start_date;
                 $end_date = $request->end_date;                
+            }
+
+            if ($request->status) {
+                $query->where('status', $request->status);
             }
 
             $query->whereBetween('check_in_date', [

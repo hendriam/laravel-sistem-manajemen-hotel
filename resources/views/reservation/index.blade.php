@@ -50,6 +50,37 @@
                                 <!-- /.card-tools -->
                             </div>
                             <div class="card-body">
+                                {{-- filter --}}
+                                <form id="filter-form" class="mb-4">
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <label>Dari Tanggal</label>
+                                            <input type="date" class="form-control" name="start_date" id="filter-start-date">
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label>Sampai Tanggal</label>
+                                            <input type="date" class="form-control" name="end_date" id="filter-end-date">
+                                        </div>
+										<div class="col-md-2">
+                                            <label>Status</label>
+											<select class="form-control" name="filter-status" id="filter-status">
+												<option value="">-- Select status --</option>
+												<option value="pending">Belum Bayar DP</option>
+												<option value="confirmed">Sudah Bayar DP</option>
+												<option value="checked_in">Check-in</option>
+												<option value="completed">Check-out</option>
+												<option value="cancelled">Batal</option>
+											</select>
+                                        </div>
+                                        <div class="col-md-6 d-flex align-items-end">
+                                            <button type="submit" class="btn btn-primary me-2">Filter</button> &nbsp
+                                            <button type="button" class="btn btn-success" id="btn-export-excel">Export Excel</button> &nbsp
+                                            <button type="button" class="btn btn-info" id="btn-export-pdf">Export PDF</button> &nbsp
+                                            <button type="button" class="btn btn-secondary" id="reset-filters">Reset</button>
+                                        </div>
+                                    </div>
+                                </form>
+
                                 <div class="table-responsive-md">
                                     <table id="data_table" class="table table-bordered table-hover">
                                         <thead>
@@ -103,6 +134,11 @@
                     headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
+                data: function (d) {
+					d.start_date = $('#filter-start-date').val();
+					d.end_date = $('#filter-end-date').val();
+					d.status = $('#filter-status').val();
+				},
                 dataSrc: 'data'
             },
             language: {
@@ -402,5 +438,42 @@
                 }
             });
         });
+
+        // Submit form filter
+		$('#filter-form').on('submit', function (e) {
+			e.preventDefault();
+			table.ajax.reload();
+		});
+
+		// Reset filter
+		$('#reset-filters').on('click', function () {
+			$('#filter-form')[0].reset();
+			table.ajax.reload();
+		});
+
+		$('#btn-export-excel').on('click', function () {
+			let status = $('#filter-status').val();
+			let startDate = $('#filter-start-date').val();
+			let endDate = $('#filter-end-date').val();
+
+			let url = new URL("{{ route('report-reservation.export.excel') }}", window.location.origin);
+			url.searchParams.append("status", status);
+			url.searchParams.append("start_date", startDate);
+			url.searchParams.append("end_date", endDate);
+			window.location.href = url.toString();
+		});
+
+		$('#btn-export-pdf').on('click', function () {
+			let status = $('#filter-status').val();
+			let startDate = $('#filter-start-date').val();
+			let endDate = $('#filter-end-date').val();
+
+			let url = new URL("{{ route('report-reservation.export.pdf') }}", window.location.origin);
+			url.searchParams.append("status", status);
+			url.searchParams.append("start_date", startDate);
+			url.searchParams.append("end_date", endDate);
+
+			window.open(url.toString(), '_blank');
+		});
     </script>
 @endsection
