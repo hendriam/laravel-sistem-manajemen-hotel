@@ -27,7 +27,7 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header">
-                                <h5 class="card-title"><strong>Reservasi atas nama : {{ $reservation->guest->name }} | {{ $reservation->guest->identity_type }} : {{ $reservation->guest->identity_number }} </strong>
+                                <h5 class="card-title"><strong>Reservasi atas nama : {{ $reservation->guest->name }} | No. Reservasi : {{ $reservation->reservation_number }} </strong>
                                     @if($reservation->status == 'pending')
                                         <span class="badge badge-secondary">Belum Bayar DP</span>
                                     @endif

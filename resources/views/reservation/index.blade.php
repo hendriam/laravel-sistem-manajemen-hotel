@@ -65,6 +65,7 @@
                                         <thead>
                                             <tr>
                                                 <th>No.</th>
+                                                <th>No. Reservasi</th>
                                                 <th>Nama Tamu</th>
                                                 <th>Kamar</th>
                                                 <th>Tgl. Check-In</th>
@@ -73,7 +74,7 @@
                                                 <th>Keterangan</th>
                                                 <th>Diinput oleh</th>
                                                 <th>Tgl.Input</th>
-                                                <th style="width: 300px; text-align:center;">#</th>
+                                                <th style="width: 350x; text-align:center;">#</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -136,6 +137,10 @@
                     orderable: false,
                 },
                 {
+                    data: 'reservation_number',
+                    orderable: false,
+                },
+                {
                     data: 'guest.name',
                     orderable: true,
                 },
@@ -194,20 +199,20 @@
                     render : function(data, type, row){
                         switch (data.status) {
                             case 'pending':
-                                return  '<a href="{{ route("reservation.index") }}/edit/'+data.id+'" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i> Edit</a> '+
-                                '<button type="button" class="btn btn-sm btn-success btn-confirm" data-id="'+data.id+'"><i class="fas fa-check"></i> Confirm</button> ' +
+                                // return  '<a href="{{ route("reservation.index") }}/edit/'+data.id+'" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i> Edit</a> '+
+                                return '<button type="button" class="btn btn-sm btn-success btn-confirm" data-id="'+data.id+'"><i class="fas fa-check"></i> Confirm</button> ' +
                                 '<a href="{{ route("reservation.index") }}/show/'+data.id+'" class="btn btn-sm btn-info"><i class="fas fa-eye"></i> Detail</a> '+
                                 '<button type="button" class="btn btn-sm btn-danger btn-cancel" data-id="'+data.id+'"><i class="fas fa-window-close"></i> Batal</button> ';
                                 break;
                             case 'confirmed':
-                                return  '<a href="{{ route("reservation.index") }}/edit/'+data.id+'" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i> Edit</a> '+
-                                '<a href="{{ route("reservation.index") }}/check-in/'+data.id+'" class="btn btn-sm btn-success"><i class="fas fa-check"></i> Check-in</a> '+
+                                // return  '<a href="{{ route("reservation.index") }}/edit/'+data.id+'" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i> Edit</a> '+
+                                return '<a href="{{ route("reservation.index") }}/check-in/'+data.id+'" class="btn btn-sm btn-success"><i class="fas fa-check"></i> Check-in</a> '+
                                 '<a href="{{ route("reservation.index") }}/show/'+data.id+'" class="btn btn-sm btn-info"><i class="fas fa-eye"></i> Detail</a> '+
                                 '<button type="button" class="btn btn-sm btn-danger btn-cancel" data-id="'+data.id+'"><i class="fas fa-window-close"></i> Batal</button> ';
                                 break;
                             case 'checked_in':
-                                return  '<a href="{{ route("reservation.index") }}/edit/'+data.id+'" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i> Edit</a> '+
-                                '<button type="button" class="btn btn-sm btn-success btn-checkout" data-id="'+data.id+'"><i class="fas fa-check"></i> Check-out</button> '+
+                                // return '<a href="{{ route("reservation.index") }}/edit/'+data.id+'" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i> Edit</a> '+
+                                return '<button type="button" class="btn btn-sm btn-success btn-checkout" data-id="'+data.id+'"><i class="fas fa-check"></i> Check-out</button> '+
                                 '<a href="{{ route("reservation.index") }}/show/'+data.id+'" class="btn btn-sm btn-info"><i class="fas fa-eye"></i> Detail</a> ';
                                 break;
                             default:
@@ -218,9 +223,9 @@
                     orderable: false,
                 }
             ],
-            order: [ 3, 'desc' ],
+            order: [ 4, 'desc' ],
             columnDefs: [
-                {targets: [9], className: 'dt-center'}
+                {targets: [10], className: 'dt-center'}
             ],
 
             fnRowCallback: function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {

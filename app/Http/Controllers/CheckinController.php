@@ -135,7 +135,9 @@ class CheckinController extends Controller
         DB::beginTransaction();
 
         try {
+            $newReservationNumber = 'RES' . now()->format('Ymd') . '' . str_pad(Reservation::count() + 1, 4, '0', STR_PAD_LEFT);
             $reservation = Reservation::create([
+                'reservation_number' => $newReservationNumber,
                 'guest_id' => $request->guest_id,
                 'room_id' => $request->room_id,
                 'check_in_date' => date('Y-m-d'),

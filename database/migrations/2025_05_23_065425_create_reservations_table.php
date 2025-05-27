@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('reservations', function (Blueprint $table) {
             $table->id();
+            $table->string('reservation_number')->unique();
             $table->foreignId('guest_id')->constrained('guests')->onDelete('restrict');
             $table->foreignId('room_id')->constrained('rooms')->onDelete('restrict');
             $table->date('check_in_date');

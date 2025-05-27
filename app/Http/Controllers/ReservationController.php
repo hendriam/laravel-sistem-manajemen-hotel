@@ -20,6 +20,7 @@ class ReservationController extends Controller
         if ($request->ajax()) {
             $columns = [
                 'id',
+                'reservation_number',
                 'guest.name',
                 'room.name',
                 'check_in_date',
@@ -102,7 +103,8 @@ class ReservationController extends Controller
         DB::beginTransaction();
 
         try {
-            $reservation = Reservation::create($request->all() + ['created_by' => Auth::id()]);
+            $newReservationNumber = 'RES' . now()->format('Ymd') . '' . str_pad(Reservation::count() + 1, 4, '0', STR_PAD_LEFT);
+            $reservation = Reservation::create($request->all() + ['reservation_number' => $newReservationNumber, 'created_by' => Auth::id()]);
 
             $checkIn = \Carbon\Carbon::parse($reservation->check_in_date);
             $checkOut = \Carbon\Carbon::parse($reservation->check_out_date);
