@@ -13,6 +13,7 @@ use App\Http\Controllers\CheckinController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PrintController;
+use App\Http\Controllers\ReportReservationController;
 
 Route::get('/', [AuthController::class, 'login'])->name('login');
 Route::post('/', [AuthController::class, 'authenticate']);
@@ -97,4 +98,10 @@ Route::middleware(['auth'])->group(function () {
 
     // Invoice
     Route::get('reservasi/invoice/{id}', [PrintController::class, 'invoice'])->name('reservation.invoice');
+
+    // Laporan
+    Route::match(['get', 'post'], 'laporan-reservasi', [ReportReservationController::class, 'index'])->name('report-reservation.index');
+    Route::get('laporan-reservasi/export/excel', [ReportReservationController::class, 'exportExcel'])->name('report-reservation.export.excel');
+    Route::get('laporan-reservasi/export/pdf', [ReportReservationController::class, 'exportPDF'])->name('report-reservation.export.pdf');
+
 });

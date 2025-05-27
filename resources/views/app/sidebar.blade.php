@@ -64,6 +64,14 @@
 						<i class="fas fa-book nav-icon"></i> <p>Reservasi</p>
 					</a>
 				</li>
+
+				<li class="nav-header">Laporan</li>
+				<li class="nav-item">
+					<a href="{{ route('report-reservation.index') }}" class="nav-link {{ request()->routeIs('report-reservation.*') ? 'active' : '' }}">
+						<i class="fas fa-sticky-note nav-icon"></i> <p>Laporan Reservasi</p>
+					</a>
+				</li>
+
 			</ul>
 		</nav>
 		<!-- /.sidebar-menu -->
