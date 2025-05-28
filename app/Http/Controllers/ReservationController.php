@@ -42,8 +42,8 @@ class ReservationController extends Controller
             $query = Reservation::with(['guest', 'room', 'createdBy', 'updatedby']);
 
             // jika tidak ada filter tanggal, buat default pertanggal hari ini
-            $start_date = date('Y-m-d');
-            $end_date = date('Y-m-d');
+            $start_date = date('Y-m-d H:i:s', strtotime('today'));
+            $end_date = date('Y-m-d' . ' H:i:s', strtotime('today +1 day'));
 
             // Filter tanggal check-in
             if ($request->filled('start_date') && $request->filled('end_date')) {
@@ -126,7 +126,14 @@ class ReservationController extends Controller
 
         try {
             $newReservationNumber = 'RES' . now()->format('Ymd') . '' . str_pad(Reservation::count() + 1, 4, '0', STR_PAD_LEFT);
-            $reservation = Reservation::create($request->all() + ['reservation_number' => $newReservationNumber, 'created_by' => Auth::id()]);
+            $reservation = Reservation::create([
+                'reservation_number' => $newReservationNumber,
+                'guest_id' => $request->guest_id,
+                'room_id' => $request->room_id,
+                'check_in_date' => \Carbon\Carbon::now()->format('Y-m-d H:i:s'),
+                'check_out_date' => \Carbon\Carbon::parse($request->check_out_date)->setTime(12, 0),
+                'created_by' => Auth::id()
+            ]);
 
             $checkIn = \Carbon\Carbon::parse($reservation->check_in_date);
             $checkOut = \Carbon\Carbon::parse($reservation->check_out_date);

@@ -136,12 +136,13 @@ class CheckinController extends Controller
 
         try {
             $newReservationNumber = 'RES' . now()->format('Ymd') . '' . str_pad(Reservation::count() + 1, 4, '0', STR_PAD_LEFT);
+            $nowTime = \Carbon\Carbon::now()->format('H:i:s');
             $reservation = Reservation::create([
                 'reservation_number' => $newReservationNumber,
                 'guest_id' => $request->guest_id,
                 'room_id' => $request->room_id,
-                'check_in_date' => date('Y-m-d'),
-                'check_out_date' => $request->check_out_date,
+                'check_in_date' => \Carbon\Carbon::now()->format('Y-m-d H:i:s'),
+                'check_out_date' => \Carbon\Carbon::parse($request->check_out_date)->setTime(12, 0),
                 'status' => 'checked_in',
                 'created_by' => Auth::id()
             ]);

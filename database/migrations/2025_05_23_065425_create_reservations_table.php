@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('reservation_number')->unique();
             $table->foreignId('guest_id')->constrained('guests')->onDelete('restrict');
             $table->foreignId('room_id')->constrained('rooms')->onDelete('restrict');
-            $table->date('check_in_date');
-            $table->date('check_out_date');
+            $table->dateTime('check_in_date');
+            $table->dateTime('check_out_date');
             $table->enum('status', ['pending', 'confirmed', 'checked_in', 'cancelled', 'completed'])->default('pending');
             $table->text('notes')->nullable();
             $table->foreignId('created_by')->constrained('users')->onDelete('restrict');
