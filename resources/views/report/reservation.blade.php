@@ -162,7 +162,7 @@
                 },
                 {
                     data: 'guest.name',
-                    orderable: true,
+                    orderable: false,
                 },
                 {
                     data: 'room.room_number',

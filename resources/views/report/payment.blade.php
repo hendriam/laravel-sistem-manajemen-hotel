@@ -6,11 +6,6 @@
     <link rel="stylesheet" href="{{ asset('assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css')}}">
     <link rel="stylesheet" href="{{ asset('assets/plugins/datatables-buttons/css/buttons.bootstrap4.min.css')}}">
     <link rel="stylesheet" href="{{ asset('assets/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css')}}">
-    <style>
-        td.dt-center{
-            text-align: center;
-        }
-    </style>
 @endsection
 
 
@@ -50,11 +45,11 @@
                                 <form id="filter-form" class="mb-4">
                                     <div class="row">
                                         <div class="col-md-2">
-                                            <label>Dari Tanggal</label>
+                                            <label>Per Tanggal</label>
                                             <input type="date" class="form-control" name="start_date" id="filter-start-date">
                                         </div>
 										<div class="col-md-2">
-                                            <label>Status</label>
+                                            <label>Per Bulan</label>
 											<select class="form-control" name="filter-month" id="filter-month">
 												<option value="">-- Select status --</option>
 												<option value="01">January</option>
@@ -72,7 +67,7 @@
 											</select>
                                         </div>
                                         <div class="col-md-2">
-                                            <label>Status</label>
+                                            <label>Per Tahun</label>
 											<select class="form-control" name="filter-year" id="filter-year">
 												<option value="">-- Select status --</option>
 												<option value="2025">2025</option>
@@ -164,13 +159,28 @@
                     },
                     orderable: false,
                 },
-                { data: 'payment_date' },
-				{ data: 'guest_name' },
-				{ data: 'room_number' },
-				{ data: 'amount', className: 'text-end' },
-				{ data: 'method' }
+                {
+                    data: 'payment_date',
+                    orderable: true,
+                },
+				{ 
+                    data: 'guest_name',
+                    orderable: false,
+                },
+				{
+                    data: 'room_number',
+                    orderable: false,
+                },
+				{
+                    data: 'amount',
+                    orderable: false,
+                },
+				{
+                    data: 'method',
+                    orderable: false,
+                }
             ],
-            // order: [ 2, 'desc' ],
+            order: [ 1, 'desc' ],
         });
         
 		// Submit form filter

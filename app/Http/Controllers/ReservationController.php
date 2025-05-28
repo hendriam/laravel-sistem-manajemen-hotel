@@ -30,6 +30,7 @@ class ReservationController extends Controller
                 'created_by.name',
                 'created_at' 
             ];
+            
             $totalData = Reservation::count();
 
             $limit = $request->input('length');   // jumlah data per halaman

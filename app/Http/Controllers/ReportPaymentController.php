@@ -15,10 +15,21 @@ class ReportPaymentController extends Controller
     public function index(Request $request) 
     {
         if ($request->ajax()) {
+            $columns = [
+                'payment_date',
+                'guest_name',
+                'room_number',
+                'amount',
+                'method',
+            ];
+
             $draw = intval($request->input('draw'));
             $start = intval($request->input('start'));
             $length = intval($request->input('length'));
             $search = $request->input('search.value');
+
+            $order = $columns[$request->input('order.0.column')];
+            $dir = $request->input('order.0.dir');
 
             $query = $this->filteredPayments($request);
           
@@ -37,7 +48,7 @@ class ReportPaymentController extends Controller
 
             $data = $query->offset($start)
                         ->limit($length)
-                        ->orderBy('payments.payment_date', 'desc')
+                        ->orderBy($order, $dir)
                         ->get()
                         ->map(function ($item) {
                             return [
