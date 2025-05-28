@@ -92,13 +92,13 @@ class ReportReservationController extends Controller
         $query = Reservation::with(['guest', 'room','createdBy', 'updatedby']);
 
         // jika tidak ada filter tanggal, buat default pertanggal hari ini
-        $start_date = date('Y-m-d');
-        $end_date = date('Y-m-d');
+        $start_date = \Carbon\Carbon::parse(date('Y-m-d') )->setTime(00, 00, 00);
+        $end_date = \Carbon\Carbon::parse(date('Y-m-d') )->setTime(23, 59, 59);
 
         // Filter tanggal check-in
         if ($request->filled('start_date') && $request->filled('end_date')) {
-            $start_date = $request->start_date;
-            $end_date = $request->end_date;                
+            $start_date = \Carbon\Carbon::parse($request->start_date)->setTime(00, 00, 00);
+            $end_date = \Carbon\Carbon::parse($request->end_date)->setTime(23, 59, 59);             
         }
 
         if ($request->status) {

@@ -24,16 +24,17 @@ class ReservationsExport implements FromCollection, WithHeadings
             $query->where('status', $this->request->status);
         }
 
-        $start_date = date('Y-m-d');
-        $end_date = date('Y-m-d');
+        // jika tidak ada filter tanggal, buat default pertanggal hari ini
+        $start_date = \Carbon\Carbon::parse(date('Y-m-d') )->setTime(00, 00, 00);
+        $end_date = \Carbon\Carbon::parse(date('Y-m-d') )->setTime(23, 59, 59);
 
-        if ($this->request->start_date && $this->request->end_date) {
-            $start_date = $this->request->start_date;
-            $end_date = $this->request->end_date;     
+        // Filter tanggal check-in
+        if ($this->request->filled('start_date') && $this->request->filled('end_date')) {
+            $start_date = \Carbon\Carbon::parse($this->request->start_date)->setTime(00, 00, 00);
+            $end_date = \Carbon\Carbon::parse($this->request->end_date)->setTime(23, 59, 59);             
         }
 
         $query->whereBetween('check_in_date', [$start_date, $end_date]);
-
 
         return $query->get()->map(function ($item) {
             return [
