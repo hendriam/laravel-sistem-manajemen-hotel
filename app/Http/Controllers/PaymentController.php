@@ -40,11 +40,11 @@ class PaymentController extends Controller
 
         try {
             $reservation = Reservation::findOrFail($reservation_id);
-
+            $nowTime = \Carbon\Carbon::now()->format('H:i:s'); 
             Payment::create([
                 'reservation_id' => $reservation->id,
                 'amount' => $request->amount,
-                'payment_date' => $request->payment_date,
+                'payment_date' => \Carbon\Carbon::parse($request->payment_date . ' ' . $nowTime),
                 'method' => $request->method,
                 'notes' => $request->notes,
                 'created_by' => Auth::id(),

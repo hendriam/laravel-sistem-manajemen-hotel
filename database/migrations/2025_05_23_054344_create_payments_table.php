@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('reservation_id')->constrained('reservations')->onDelete('restrict');
             $table->decimal('amount', 9, 0)->default(0);;
-            $table->date('payment_date');
+            $table->dateTime('payment_date');
             $table->enum('method', ['cash', 'transfer'])->default('cash');
             $table->text('notes')->nullable();
             $table->foreignId('created_by')->constrained('users')->onDelete('restrict');

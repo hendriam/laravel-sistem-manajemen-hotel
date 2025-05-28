@@ -163,7 +163,7 @@ class CheckinController extends Controller
             Payment::create([
                 'reservation_id' => $reservation->id,
                 'amount' => $request->total_amount,
-                'payment_date' => now(),
+                'payment_date' => \Carbon\Carbon::now()->format('Y-m-d H:i:s'),
                 'method' => $request->payment_method,
                 'notes' => $request->notes_down_payment,
                 'created_by' => Auth::id(),
