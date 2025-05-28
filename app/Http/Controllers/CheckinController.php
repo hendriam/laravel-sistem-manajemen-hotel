@@ -17,9 +17,12 @@ class CheckinController extends Controller
     {
         $reservation = Reservation::with(['guest', 'room', 'payments'])->findOrFail($id);
 
-        $checkIn = \Carbon\Carbon::parse($reservation->check_in_date);
-        $checkOut = \Carbon\Carbon::parse($reservation->check_out_date);
-        $reservation->duration = $checkIn->diffInDays($checkOut);
+        $checkIn = \Carbon\Carbon::parse($reservation->check_in_date)->toDateString();
+        $checkOut = \Carbon\Carbon::parse($reservation->check_out_date)->toDateString();
+        $checkInDate = \Carbon\Carbon::createFromFormat('Y-m-d', $checkIn);
+        $checkOutDate = \Carbon\Carbon::createFromFormat('Y-m-d', $checkOut);
+
+        $reservation->duration = $checkInDate->diffInDays($checkOutDate);
         $reservation->total_paid = $reservation->payments->sum('amount');
 
         return view('reservation.checkin', compact('reservation'), [
@@ -52,10 +55,13 @@ class CheckinController extends Controller
                 ], 400));
             }
 
-            $checkIn = \Carbon\Carbon::parse($reservation->check_in_date);
-            $checkOut = \Carbon\Carbon::parse($reservation->check_out_date);
-            $duration = $checkIn->diffInDays($checkOut);
-            
+            $checkIn = \Carbon\Carbon::parse($reservation->check_in_date)->toDateString();
+            $checkOut = \Carbon\Carbon::parse($reservation->check_out_date)->toDateString();
+            $checkInDate = \Carbon\Carbon::createFromFormat('Y-m-d', $checkIn);
+            $checkOutDate = \Carbon\Carbon::createFromFormat('Y-m-d', $checkOut);
+
+            $duration = $checkInDate->diffInDays($checkOutDate);
+
             $total = $reservation->room->price * $duration;
             $paid = $reservation->payments->sum('amount');
             $remaining = $total - $paid;
@@ -147,9 +153,12 @@ class CheckinController extends Controller
                 'created_by' => Auth::id()
             ]);
 
-            $checkIn = \Carbon\Carbon::parse($reservation->check_in_date);
-            $checkOut = \Carbon\Carbon::parse($reservation->check_out_date);
-            $duration = $checkIn->diffInDays($checkOut);
+            $checkIn = \Carbon\Carbon::parse($reservation->check_in_date)->toDateString();
+            $checkOut = \Carbon\Carbon::parse($reservation->check_out_date)->toDateString();
+            $checkInDate = \Carbon\Carbon::createFromFormat('Y-m-d', $checkIn);
+            $checkOutDate = \Carbon\Carbon::createFromFormat('Y-m-d', $checkOut);
+            
+            $duration = $checkInDate->diffInDays($checkOutDate);
             $totalRoomPrices = $reservation->room->price * $duration;
 
             if(!$this->checkTotalAmount($totalRoomPrices, $request->total_amount)) {
