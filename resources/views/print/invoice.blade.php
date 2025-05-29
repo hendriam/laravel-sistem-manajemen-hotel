@@ -67,7 +67,8 @@
             <div>
                 <h2>INVOICE</h2>
                 <p>No. Invoice: {{ $reservation->reservation_number }}</p>
-                <p>Tanggal: {{ \Carbon\Carbon::parse($reservation->created_at)->format('d M Y') }}</p>
+                <p>Tgl. Reservasi: {{ \Carbon\Carbon::parse($reservation->created_at)->format('d M Y H:m:s') }}</p>
+                <p>Tgl Check-in: {{ \Carbon\Carbon::parse($reservation->check_in_date)->format('d M Y H:m:s') }}</p>
             </div>
         </div>
         <div class="content">
@@ -95,7 +96,7 @@
                 <tr>
                     <th style="text-align: start">No.</th>
                     <th style="text-align: start">Kamar</th>
-                    <th style="text-align: end">Qty</th>
+                    <th style="text-align: end">Durasi</th>
                     <th style="text-align: end">Harga Kamar</th>
                     <th style="text-align: end">Total</th>
                 </tr>

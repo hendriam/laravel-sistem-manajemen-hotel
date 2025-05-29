@@ -29,7 +29,7 @@
                 <th>Status</th>
                 <th>Keterangan</th>
                 <th>Diinput oleh</th>
-                <th>Tgl. Input</th>
+                <th>Tgl. Reservasi</th>
             </tr>
         </thead>
         <tbody>

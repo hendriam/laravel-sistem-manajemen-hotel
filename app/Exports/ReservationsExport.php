@@ -47,7 +47,7 @@ class ReservationsExport implements FromCollection, WithHeadings
                 'Status' => $item->status,
                 'Catatan' => $item->notes ?? '-',
                 'Diinput oleh' => $item->createdBy->name ?? '-',
-                'Tanggal input' => $item->created_at->format('Y-m-d H:i:s')
+                'Tanggal Reservasi' => $item->created_at->format('Y-m-d H:i:s')
             ];
         });
     }
@@ -64,7 +64,7 @@ class ReservationsExport implements FromCollection, WithHeadings
             'Status',
             'Catatan',
             'Diinput oleh',
-            'Tanggal input'
+            'Tanggal Reservasi'
         ];
     }
 }

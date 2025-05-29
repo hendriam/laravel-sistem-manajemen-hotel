@@ -89,10 +89,11 @@
                                                 <th>Kamar</th>
                                                 <th>Tgl. Check-In</th>
                                                 <th>Tgl. Check-Out</th>
+                                                <th>Durasi</th>
                                                 <th>Status</th>
                                                 <th>Keterangan</th>
                                                 <th>Diinput oleh</th>
-                                                <th>Tgl.Input</th>
+                                                <th>Tgl. Reservasi</th>
                                                 <th style="width: 350x; text-align:center;">#</th>
                                             </tr>
                                         </thead>
@@ -179,6 +180,16 @@
                 {
                     data: 'check_out_date',
                     orderable: true,
+                },
+                {
+                    data: null,
+                    render: function (data, type, row) {
+                        var checkInDate = moment(data.check_in_date);
+                        var checkOutDate = moment(data.check_out_date);
+                        var jumlahHari = checkOutDate.diff(checkInDate, 'days') + 1;
+                        return jumlahHari + ' hari';
+                    },
+                    orderable: false,
                 },
                 {
                     data: 'status',
