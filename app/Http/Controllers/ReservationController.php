@@ -109,7 +109,6 @@ class ReservationController extends Controller
             'notes_down_payment' => 'nullable|string',
         ]);
 
-        
         // Cek apakah tamu sudah punya reservasi aktif
         $existing = Reservation::where('guest_id', $request->guest_id)
             ->whereIn('status', ['pending', 'checked_in'])
@@ -126,11 +125,12 @@ class ReservationController extends Controller
 
         try {
             $newReservationNumber = 'RES' . now()->format('Ymd') . '' . str_pad(Reservation::count() + 1, 4, '0', STR_PAD_LEFT);
+            $nowTime = \Carbon\Carbon::now()->format('H:i:s');
             $reservation = Reservation::create([
                 'reservation_number' => $newReservationNumber,
                 'guest_id' => $request->guest_id,
                 'room_id' => $request->room_id,
-                'check_in_date' => \Carbon\Carbon::now()->format('Y-m-d H:i:s'),
+                'check_in_date' => \Carbon\Carbon::parse($request->check_in_date . ' ' . $nowTime),
                 'check_out_date' => \Carbon\Carbon::parse($request->check_out_date)->setTime(12, 0),
                 'created_by' => Auth::id()
             ]);

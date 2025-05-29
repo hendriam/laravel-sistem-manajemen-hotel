@@ -173,13 +173,14 @@
             format: 'YYYY-MM-DD'
         });
 
-        // $('#check_in_date').click(function () {
-        //     $('#room_id').val("");
-        //     $('#room_id').text("");
-        //     $('#number_of_days').val(1);
-        //     $('#room_price').val(0);
-        //     $('#total_price').val(0);
-        // })
+        $('#check_in_date').click(function () {
+            $('#check_out_date').val("");
+            $('#room_id').val("");
+            $('#room_id').text("");
+            $('#number_of_days').val(1);
+            $('#room_price').val(0);
+            $('#total_price').val(0);
+        })
 
         $('#check_out_date').click(function () {
             $('#room_id').val("");

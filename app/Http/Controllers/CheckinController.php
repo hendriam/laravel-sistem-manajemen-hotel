@@ -142,7 +142,6 @@ class CheckinController extends Controller
 
         try {
             $newReservationNumber = 'RES' . now()->format('Ymd') . '' . str_pad(Reservation::count() + 1, 4, '0', STR_PAD_LEFT);
-            $nowTime = \Carbon\Carbon::now()->format('H:i:s');
             $reservation = Reservation::create([
                 'reservation_number' => $newReservationNumber,
                 'guest_id' => $request->guest_id,
