@@ -56,18 +56,18 @@
                                             @foreach ($reservation->payments as $payment)
                                                 <tr>
                                                     <td>{{ \Carbon\Carbon::parse($payment->payment_date)->format('d M Y') }}</td>
-                                                    <td>Rp{{ number_format($payment->amount, 0, ',', '.') }}</td>
+                                                    <td>Rp {{ number_format($payment->amount, 0, ',', '.') }}</td>
                                                     <td>{{ ucfirst($payment->method) }}</td>
                                                     <td>{{ $payment->notes ?? '-' }}</td>
-                                                    <td>{{ $payment->user->name ?? 'N/A' }}</td>
+                                                    <td>{{ $payment->createdBy->name ?? 'N/A' }}</td>
                                                 </tr>
                                             @endforeach
                                         </tbody>
                                     </table>
                                     <div class="alert alert-info mt-2">
-                                        <strong>Total:</strong> Rp{{ number_format($reservation->room->price * $reservation->duration, 0, ',', '.') }} <br>
-                                        <strong>Dibayar:</strong> Rp{{ number_format($reservation->total_paid, 0, ',', '.') }}<br>
-                                        <strong>Sisa:</strong> Rp{{ number_format(($reservation->room->price * $reservation->duration) - $reservation->total_paid, 0, ',', '.') }}
+                                        <strong>Total:</strong> Rp {{ number_format($reservation->room->price * $reservation->duration, 0, ',', '.') }} <br>
+                                        <strong>Dibayar:</strong> Rp {{ number_format($reservation->total_paid, 0, ',', '.') }}<br>
+                                        <strong>Sisa:</strong> Rp {{ number_format(($reservation->room->price * $reservation->duration) - $reservation->total_paid, 0, ',', '.') }}
                                     </div>
                                 @else
                                     <p>Belum ada pembayaran.</p>
